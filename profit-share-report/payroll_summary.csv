@@ -1,0 +1,13 @@
+employee,is_owner,pay_period,total_hours,hourly_rate,gross_pay,notes
+Kierran Kivinen,no,Mar 16-22,31.75,24.50,777.88,
+Kierran Kivinen,no,Mar 23-29,29.75,24.50,744.19,incl 1.25 OT
+Kierran Kivinen,no,Mar 30-Apr 12,68.46,24.50,2041.22,
+Kierran Kivinen,no,Apr 13-24,74.25,,2388.75,rate stepped up
+Kierran Kivinen,no,Apr 25-May 11,84.76,27.00,2342.66,
+Kierran Kivinen,no,May 12-22,62.73,27.00,1702.76,
+Kierran Kivinen,no,May 23-Jun 6,82.12,27.00,2239.79,SPANS PAST MAY 31 - prorate
+Booker Daniel,no,Apr 6-12,34.41,24.50,849.17,
+Booker Daniel,no,Apr 13-24,41.27,30.00,1312.80,
+Booker Daniel,no,Apr 25-May 11,83.21,30.00,2694.45,
+Booker Daniel,no,May 12-22,86.39,30.00,2691.60,
+Booker Daniel,no,May 23-Jun 6,95.54,30.00,3066.30,SPANS PAST MAY 31 - prorate
