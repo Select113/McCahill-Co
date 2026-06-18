@@ -32,9 +32,20 @@ McCahill net       = Total profit − CanopyCo share
                    = (Labour profit + Materials profit) − CanopyCo share
 ```
 
-**Key rule on payroll:** you can write off your **employees'** payroll against labour profit,
-but **not your own on-site hours**. So any hours flagged as "owner" are excluded from the
-deductible payroll — your own billed labour flows through as profit.
+**Key rule on payroll (CONFIRMED):** you can write off your **employees'** payroll against
+labour profit, but **not your own hours**. Any row flagged `is_owner = yes` is excluded entirely.
+
+**Paid time vs billable time:** an employee's real cost is their **full paid day** (from clock-in
+in the morning to back at the office), but revenue is driven by **billable on-site hours per
+client**. So the method is:
+
+```
+employee daily cost = paid_hours × hourly_cost          (the real cost to you)
+allocate that cost to clients in proportion to that day's billable_hours per client
+```
+
+Non-billable time (travel, sourcing, dump runs) is therefore still written off — it just lands
+on the client(s) the employee was billable to that day.
 
 **Exclusive clients:** clients flagged as your own (not CanopyCo's) are reported separately
 and **no split is applied** — they're shown for completeness only.
@@ -58,8 +69,8 @@ Materials profit  = 8,000 − 5,000 = 3,000   → CanopyCo 50% = $1,500
 Total revenue 13,000 − COGS 5,000 − payroll 1,800 − CanopyCo 2,396 = $3,804 to McCahill
 ```
 
-> **Note on GST:** all figures above should be **pre-GST (net)**. GST is collected and remitted —
-> it isn't revenue or profit — so it's excluded from the split. (Confirm in the questions.)
+> **Note on GST (CONFIRMED):** all figures are **pre-GST (net)**. GST is collected and remitted —
+> it isn't revenue or profit — so it's excluded from the split throughout.
 
 ---
 
@@ -108,20 +119,33 @@ One row per supplier receipt / subcontractor bill. Tie each to a client (and inv
 | `cost` | $ you paid (pre-GST) |
 | `notes` | |
 
-### 4. `payroll.csv` — employee hours & cost, by client
-One row per employee per job/day (or per client per month — whatever's easiest).
+### 4a. `payroll_days.csv` — the paid-time log (your cost)
+One row per employee per day — their actual paid day, start to back-at-office.
 
 | column | meaning |
 |---|---|
-| `date` | `YYYY-MM-DD` (or first of month if monthly) |
+| `date` | `YYYY-MM-DD` |
 | `employee_name` | |
-| `is_owner` | `yes` for your own hours (excluded), `no` for employees |
-| `client_name` | which client the hours were worked on |
-| `invoice_no` | optional |
-| `hours` | hours worked |
-| `hourly_cost` | what the hour costs **you** (wage incl. burden if you want), not the billed rate |
-| `total_cost` | hours × hourly_cost (leave blank and I'll compute) |
+| `is_owner` | `yes` for your own hours (excluded entirely), `no` for employees |
+| `start_time` / `end_time` | clock-in / clock-out (optional if you give paid_hours) |
+| `paid_hours` | total paid hours for the day |
+| `hourly_cost` | what the hour costs **you** (wage, plus burden if you want) — not the billed rate |
 | `notes` | |
+
+### 4b. `billable_hours.csv` — the billable log (revenue side / allocation)
+One row per employee per client per day — the on-site hours billed to that client.
+
+| column | meaning |
+|---|---|
+| `date` | `YYYY-MM-DD` (matches `payroll_days.csv`) |
+| `employee_name` | |
+| `client_name` | must match `clients.csv` |
+| `invoice_no` | optional |
+| `billable_hours` | on-site hours billed to that client that day |
+| `notes` | |
+
+> I join these two by `date` + `employee_name`: the paid-day cost is spread across whatever
+> clients the employee was billable to that day.
 
 ---
 
@@ -137,6 +161,16 @@ A polished report (HTML + PDF, matching your Invoice #40 letterhead) containing:
 
 ---
 
-## Things I still need confirmed
-See the questions I've asked alongside this. The big ones: the exact labour-profit definition,
-GST treatment, how payroll ties to clients, and your season start date.
+## Confirmed methodology
+- Labour profit = labour billed − **employee** payroll (owner hours excluded).
+- All figures **pre-GST**.
+- Employee cost = full paid day, allocated to clients by billable hours per date.
+- Split applies only to `canopyco` clients; `exclusive` clients shown separately, no split.
+
+## What I still need from you
+1. **Season start date** (looks like ~Feb 2026 from Invoice #40 — confirm).
+2. The raw files — drop them in `source/` (see `source/README.md`) or paste into chat:
+   - invoices (start of season → end of May)
+   - cost-of-goods receipts / supplier & subcontractor bills
+   - employee daily time logs + billable-hours-per-client log
+   I'll extract the invoices and logs and reconcile everything into the report.

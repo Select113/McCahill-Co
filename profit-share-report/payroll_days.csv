@@ -1,0 +1,3 @@
+date,employee_name,is_owner,start_time,end_time,paid_hours,hourly_cost,notes
+2026-03-02,Kyle,yes,07:30,17:00,9.5,,example — owner; excluded from deductible payroll
+2026-03-02,Employee A,no,07:45,16:30,8.75,25.00,"example — full paid day (start to back at office)"
