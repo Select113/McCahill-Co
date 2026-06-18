@@ -1,0 +1,2 @@
+invoice_no,client_name,invoice_date,labour_billed,materials_billed,subcontractor_billed,extras_billed,gst,status,notes
+40,Teresa,2026-05-09,14825.00,21015.08,3950.00,5450.00,2345.01,closed,"example row from Invoice #40 — fence is blended supply+install; edit/delete"

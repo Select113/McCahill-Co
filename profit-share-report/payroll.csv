@@ -1,0 +1,3 @@
+date,employee_name,is_owner,client_name,invoice_no,hours,hourly_cost,total_cost,notes
+2026-03-02,Kyle,yes,Teresa,40,9,,,example — owner hours excluded from deduction
+2026-03-02,Employee A,no,Teresa,40,9,25.00,,example — employee payroll IS deductible

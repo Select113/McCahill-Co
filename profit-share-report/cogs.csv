@@ -1,0 +1,3 @@
+date,client_name,invoice_no,category,supplier,description,cost,notes
+2026-03-02,Teresa,40,materials,K2 Stone,"Ocean Pearl stepping stones + ledgestone",7502.44,example row — delete or edit
+2026-02-23,Teresa,40,subcontractor,Excavation sub,"Full day, 2 operators",3950.00,example row — delete or edit
