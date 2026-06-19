@@ -1,3 +1,11 @@
-date,client_name,invoice_no,category,supplier,description,cost,notes
-2026-03-02,Teresa,40,materials,K2 Stone,"Ocean Pearl stepping stones + ledgestone",7502.44,example row — delete or edit
-2026-02-23,Teresa,40,subcontractor,Excavation sub,"Full day, 2 operators",3950.00,example row — delete or edit
+cogs_client,invoice_client,exclusive,cost,group,notes
+Teresa,Teresa,no,15744.05,concurrent,"inv #40 — stone/excavation/plants/materials"
+Trudy,Trudy Busch,no,20902.99,concurrent,"incl $10,000 'Ryan Expense Deposit' (SENT) + $6,400 blackbox electrical phase 1 (UNPAID) — CONFIRM both"
+Anita,Anita,yes,903.53,concurrent,"EXCLUSIVE client — islandview plants + macnut delivery"
+Robert Niven,Robert Niven,no,1667.14,oneoff,"20 yds soil + grass seed"
+Dave Wallace,Dave Green,no,523.82,oneoff,"NAME MISMATCH: COGS says 'Dave Wallace', invoice #38 says 'Dave Green' — assumed same client"
+Christine,Christine,yes,277.93,oneoff,"EXCLUSIVE client — cedar mulch + sand (sheet total omits one $81.33 mulch line)"
+Lila,Lila King,no,4661.67,oneoff,"k2 stone, fabric, weedman, rentals, road base, etc."
+Stratta,Oak Park VIS 5459,no,894.68,ongoing,"MAPPING UNCERTAIN: 'Stratta' assumed = Oak Park strata; June 5 mulch — Oak Park invoices are labour-only (no materials billed)"
+Bill Sanderson,Bill,no,738.19,ongoing,"June 5 mulch — assumed = invoice 'Bill'"
+Fil (Anya Ln),Fil,no,25.21,ongoing,"June 5 osmanthus"
