@@ -82,36 +82,40 @@ function banner(range, bg) {
 // ═════════════════════════════════════════════════════════════════════════════
 function buildCalSheet(sh) {
   sh.clear();
+  sh.clearFormats();
   sh.setTabColor(C.navy);
 
-  // Title
-  sh.appendRow(['McCahill Co  —  July 2026 Field Schedule', '', '', '', '']);
-  const title = sh.getRange(1, 1, 1, 5);
+  // Use explicit row tracking — appendRow(['','','','','']) doesn't advance
+  // getLastRow() (all-empty rows don't register), which causes merge conflicts.
+  let r = 1;
+
+  // Row 1: Title
+  sh.getRange(r, 1, 1, 5).setValues([['McCahill Co  —  July 2026 Field Schedule', '', '', '', '']]);
+  const title = sh.getRange(r, 1, 1, 5);
   title.merge();
   banner(title, C.navy);
   title.setFontSize(15).setHorizontalAlignment('center');
-  sh.setRowHeight(1, 44);
+  sh.setRowHeight(r, 44);
+  r++;
 
-  // Legend
-  sh.appendRow(['', '', '', '', '']);
-  const legRow = sh.getLastRow();
-  sh.getRange(legRow, 1)
-    .setValue('Colour key:')
+  // Row 2: Legend
+  sh.getRange(r, 1).setValue('Colour key:')
     .setFontWeight('bold').setFontSize(8).setFontColor(C.muted);
-  sh.getRange(legRow, 2, 1, 4).merge()
+  sh.getRange(r, 2, 1, 4).merge()
     .setValue('Lavender = Full Team  |  Blue = Kyle + Kierran  |  Green = Booker  |  Yellow = Both Teams (diff sites)  |  Peach = Project / Special  |  Pink = Canada Day')
     .setFontSize(8).setFontColor(C.muted).setFontStyle('italic').setVerticalAlignment('middle');
-  sh.getRange(legRow, 1, 1, 5).setBackground('#f8f8f8');
-  sh.setRowHeight(legRow, 20);
+  sh.getRange(r, 1, 1, 5).setBackground('#f8f8f8');
+  sh.setRowHeight(r, 20);
+  r++;
 
-  // Column headers — freeze here so title/legend stay visible
-  sh.appendRow(['Date', 'Day', 'Kyle + Kierran  (Team A)', 'Booker  (Team B)', 'Notes']);
-  const hdrRow = sh.getLastRow();
-  const hdr    = sh.getRange(hdrRow, 1, 1, 5);
+  // Row 3: Column headers (freeze here)
+  sh.getRange(r, 1, 1, 5).setValues([['Date', 'Day', 'Kyle + Kierran  (Team A)', 'Booker  (Team B)', 'Notes']]);
+  const hdr = sh.getRange(r, 1, 1, 5);
   banner(hdr, C.blue);
   hdr.setFontSize(10).setHorizontalAlignment('center');
-  sh.setRowHeight(hdrRow, 30);
-  sh.setFrozenRows(hdrRow);
+  sh.setRowHeight(r, 30);
+  sh.setFrozenRows(r);
+  r++;
 
   // Data rows
   const bgMap = {
@@ -123,28 +127,27 @@ function buildCalSheet(sh) {
 
     // ── thin spacer between weeks ─────────────────────────────────
     if (row.type === 'spacer') {
-      sh.appendRow(['', '', '', '', '']);
-      const sr = sh.getLastRow();
-      sh.setRowHeight(sr, 6);
-      sh.getRange(sr, 1, 1, 5).setBackground('#d0d0d0');
+      sh.getRange(r, 1).setValue(' '); // non-empty so the row registers
+      sh.setRowHeight(r, 6);
+      sh.getRange(r, 1, 1, 5).setBackground('#d0d0d0');
+      r++;
       return;
     }
 
     // ── week banner ───────────────────────────────────────────────
     if (row.type === 'weekHeader') {
-      sh.appendRow(['   ' + row.label, '', '', '', '']);
-      const wr  = sh.getLastRow();
-      const wrng = sh.getRange(wr, 1, 1, 5);
+      sh.getRange(r, 1, 1, 5).setValues([['   ' + row.label, '', '', '', '']]);
+      const wrng = sh.getRange(r, 1, 1, 5);
       wrng.merge();
       banner(wrng, C.navy);
       wrng.setFontSize(10).setHorizontalAlignment('left');
-      sh.setRowHeight(wr, 30);
+      sh.setRowHeight(r, 30);
+      r++;
       return;
     }
 
     // ── regular day row ───────────────────────────────────────────
-    sh.appendRow([row.date, row.day, row.a, row.b, row.notes]);
-    const r  = sh.getLastRow();
+    sh.getRange(r, 1, 1, 5).setValues([[row.date, row.day, row.a, row.b, row.notes]]);
     const bg = bgMap[row.type] || C.grey;
 
     sh.getRange(r, 1, 1, 4).setBackground(bg);
@@ -168,6 +171,7 @@ function buildCalSheet(sh) {
       false, false, true, false, false, false,
       '#cccccc', SpreadsheetApp.BorderStyle.SOLID
     );
+    r++;
   });
 
   // Column widths
