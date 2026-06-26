@@ -41,7 +41,7 @@
 | Project | Location | Team | Days | Notes |
 |---------|----------|------|------|-------|
 | Walkway installation | Anita's — 4521 Cheeseman Rd | A | 2 days | Day 1: Fri Jul 3 / Day 2: Thu Jul 9 PM (after Ramsay) |
-| Power washing | Carol Ann's — 4070 Lockehaven Dr | A | 2 days | Day 1: Fri Jul 10 (extended service day) / Day 2: Fri Jul 24 — **sun required** |
+| Power washing | Carol Ann's — 4070 Lockehaven Dr | A | 2 days | Day 1: Fri Jul 10 / Day 2: Sat Jul 11 — **sun required** |
 
 ---
 
@@ -158,7 +158,14 @@
 | A — Kyle + Kierran | Carol Ann — Regular Service + Power Wash Day 1 | 4070 Lockehaven Dr | 8:00am – 4:00/5:00pm | Extended day |
 | B — Booker | Projects | — | All day | — |
 
-> Day 1 of power wash does not require sun — combine with regular service for a full day at Carol Ann's.
+> Day 1 does not require sun — combine with regular service for a full day at Carol Ann's.
+
+**Saturday, July 11** — Carol Ann: Power Wash Day 2 ☀️
+| Team | Client | Address | Time | Hours |
+|------|--------|---------|------|-------|
+| A — Kyle + Kierran | Carol Ann — Power Wash Day 2 | 4070 Lockehaven Dr | TBD | Day 2 |
+
+> **Sun required.** If Jul 11 is overcast, push to the next clear Saturday (Jul 18 or Jul 25).
 
 ---
 
@@ -238,13 +245,12 @@
 | A — Kyle + Kierran | Projects | — | 11:30am+ | — |
 | B — Booker | Projects | — | All day | — |
 
-**Friday, July 24** — Carol Ann: Regular Service + Power Wash Day 2 ☀️
+**Friday, July 24** — Carol Ann: Regular Service
 | Team | Client | Address | Time | Hours |
 |------|--------|---------|------|-------|
-| A — Kyle + Kierran | Carol Ann — Regular Service + Power Wash Day 2 | 4070 Lockehaven Dr | 8:00am – 4:00/5:00pm | Extended day |
+| A — Kyle + Kierran | Carol Ann — Regular Service | 4070 Lockehaven Dr | 8:00am – 12:00/2:00pm | 4–6h |
+| A — Kyle + Kierran | Projects (if done early) | — | PM | — |
 | B — Booker | Projects | — | All day | — |
-
-> **Day 2 requires sun.** If Jul 24 is overcast, complete regular service only and reschedule power wash Day 2 to the next suitable clear day (earliest opening: Mon Jul 27 PM or Thu Jul 30 AM before Ramsay-area travel).
 
 ---
 
@@ -304,7 +310,7 @@
 | Anita — Walkway Project | 2 project days | Jul 3 (full day), Jul 9 (PM) |
 | Madeline | 2 | Jul 7, 21 |
 | Carol Ann — Regular Service | 2 | Jul 10, 24 |
-| Carol Ann — Power Wash Project | 2 project days | Jul 10 (Day 1), Jul 24 (Day 2 — ☀️ required) |
+| Carol Ann — Power Wash Project | 2 project days | Jul 10 (Day 1), Jul 11 Sat (Day 2 — ☀️ required) |
 | Justin | 2 | Jul 7, 21 |
 | Laurie | 2 | Jul 7, 21 |
 | Bills | 2 | Jul 17, 31 |
@@ -340,6 +346,6 @@
 
 ## Open Items
 
-- [ ] **Carol Ann Power Wash Day 2 (Jul 24) — weather contingency.** If overcast, next options: Mon Jul 27 PM (tight after Anita) or carryover to August.
+- [ ] **Carol Ann Power Wash Day 2 (Sat Jul 11) — weather contingency.** If overcast, fallback Saturdays are Jul 18 or Jul 25.
 - [ ] **Additional projects.** Share remaining project details — Booker has good availability most Fridays and the project windows above can absorb Team A work on non-Jenicas Thursdays.
 - [ ] **Anita long Mondays (Jul 13 & Jul 27).** Both days run Stratta → Sens → Anita back to back (~10h with travel). Flag if this needs adjusting.
