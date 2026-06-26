@@ -31,10 +31,8 @@
 | Andrei | 5577 Alderley Dr | B | Bi-weekly | 4h |
 | Laurie | 495 Norris Rd | B | Bi-weekly | 2h |
 | Stephanie | 1140 Boardman Ln, East Sooke | A | Monthly | 5–7h |
-| Linda | 235 Anya Lane, Langford | A + B | TBC — see below | 6h (2-man) |
-| Fil | 233 Anya Lane, Langford | B then ALL | TBC — see below | 6h solo + 2h all-in |
-
-> **Linda & Fil frequency not yet confirmed** — placeholder visit is July 28. See notes below.
+| Linda | 235 Anya Lane, Langford | A + B | Monthly | 6h (2-man) |
+| Fil | 233 Anya Lane, Langford | B then ALL | Monthly | 6h solo + 2h all-in |
 
 ---
 
@@ -315,7 +313,7 @@
 | Ian & Judy | 2 | Jul 16, 30 |
 | Andrei | 2 | Jul 17, 31 |
 | Stephanie | 1 | Jul 14 |
-| Linda & Fil | 1 (placeholder) | Jul 28 |
+| Linda & Fil | 1 | Jul 28 |
 
 ---
 
@@ -342,7 +340,6 @@
 
 ## Open Items
 
-- [ ] **Linda & Fil — confirm frequency.** If bi-weekly, a second July visit needs a slot (limited full-team availability — would likely require restructuring one week). If weekly, needs a permanent anchor day (Langford trips best on Tuesdays when no Madeline/Stephanie conflict).
 - [ ] **Carol Ann Power Wash Day 2 (Jul 24) — weather contingency.** If overcast, next options: Mon Jul 27 PM (tight after Anita) or carryover to August.
 - [ ] **Additional projects.** Share remaining project details — Booker has good availability most Fridays and the project windows above can absorb Team A work on non-Jenicas Thursdays.
 - [ ] **Anita long Mondays (Jul 13 & Jul 27).** Both days run Stratta → Sens → Anita back to back (~10h with travel). Flag if this needs adjusting.
