@@ -29,22 +29,25 @@ pickups, where a low-cost material still needs a full trip to source and collect
 project, the blended markup comes to about 70%, as the schedule shows.
 
 MICROCLOVER
-The micro-clover was seeded into [LOCATION — e.g. the back lawn / front lawn areas]; approximately
-[AMOUNT] was used, to cover roughly [AREA] sq ft.
+The micro-clover was seeded across the back lawn area beside the split-rail fence. This was something
+we discussed early on — micro-clover was chosen there deliberately as a low-/no-maintenance, no-mow
+ground cover in place of conventional grass seed. The full quantity supplied (the micro-clover mix
+shown on the invoice) was applied across that back lawn area.
 
 SPLIT-RAIL FENCE
 The fence was priced as a complete, installed split-rail fence at a fixed $5,450. In the interest of
 full transparency: the fence materials (Slegg split-rail and rebar) were $1,078.41, and installation
-was carried out over approximately two days. As a finished fixed-price item, the fence does carry a
+was carried out over two days. As a finished fixed-price item, the fence does carry a
 higher margin than my individual material lines — which is balanced by the fact that many materials
 on this project were billed below my standard markup (the main stone order at ~40% being the clearest
 example). Looking at the project as a whole, the blended markup is about 70%, which I believe
 reflects fair overall pricing for the work completed.
 
 SIDE STRIP / LAVENDER BED
-The side-strip garden was planted with lavenders and grasses (the June 9 Island View order). [Add:
-materials used, the date(s) and approximate hours, and whether any rock was removed or relocated for
-this bed.]
+The side-strip garden was planted with the lavenders and ornamental grasses from the June 9 Island
+View order. The bed preparation and planting were carried out as part of the late-May/June planting
+work already reflected in the daily labour log; no separate charge was made for rock removal or
+relocation on this bed.
 
 LABOUR RECORDS & SCOPE
 The labour was billed at the actual on-site hours worked each day, as recorded on the daily
