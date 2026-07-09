@@ -308,6 +308,31 @@
   .s-metrics .m-val.pos { color: var(--good); }
   .s-metrics .m-val.neg { color: var(--critical); }
 
+  /* profit chart */
+  .profit-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    box-shadow: var(--shadow);
+    margin-top: 16px;
+    margin-bottom: 10px;
+  }
+  .profit-chart .chart-empty { font-size: 12.5px; color: var(--ink-muted); padding: 4px 0; }
+  .profit-bar-row { display: flex; align-items: center; gap: 14px; }
+  .profit-bar-row .p-label { width: 150px; flex-shrink: 0; font-size: 12px; color: var(--ink-dim); }
+  .profit-bar-track { position: relative; flex: 1; height: 24px; min-width: 0; }
+  .profit-bar-track .p-baseline { position: absolute; top: -5px; bottom: -5px; width: 1px; background: var(--ink-muted); opacity: 0.5; }
+  .profit-bar-track .p-fill { position: absolute; top: 3px; bottom: 3px; border-radius: 4px; }
+  .profit-bar-track .p-value {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    font-size: 12px; font-weight: 700; white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
   /* tables */
   .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); }
   table.data {
@@ -449,6 +474,34 @@
   </div>
   <div class="scenarios" id="scenarios"></div>
 
+  <h2 class="section">Profits</h2>
+  <p class="section-note">Net profit on labor = total weekly revenue (clients + other revenue above) minus what you pay employees. Your own pay is only subtracted if you give yourself a rate in the team table below.</p>
+
+  <div class="adjust-row">
+    <label for="weeks-per-year">Operating weeks per year <span class="adjust-hint">— optional, annualizes the figures below (leave blank to skip)</span></label>
+    <div class="adjust-input">
+      <input type="number" id="weeks-per-year" min="1" max="52" step="1" placeholder="52">
+      <span class="suffix">wks / yr</span>
+    </div>
+  </div>
+
+  <div class="table-scroll">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:26%">Scenario</th>
+          <th class="num" style="width:18%">Labor cost / wk</th>
+          <th class="num" style="width:18%">Net profit / wk</th>
+          <th class="num" style="width:14%">Margin</th>
+          <th class="num" style="width:24%">Net profit / yr</th>
+        </tr>
+      </thead>
+      <tbody id="profit-body"></tbody>
+    </table>
+  </div>
+
+  <div class="profit-chart" id="profit-chart"></div>
+
   <h2 class="section">Team &amp; hiring scenario</h2>
   <p class="section-note">Check a scenario column to include that person's hours in it. For backup capacity (like your reserve truck), set Hrs/wk to what you'd actually plan to cover, not a full-time number. Pay rate is optional — add it to see weekly labor cost and margin.</p>
   <div class="table-scroll">
@@ -528,7 +581,8 @@
       clients: [
         { id: uid(), name: '', freq: 'weekly', hours: 2, rate: null }
       ],
-      otherRevenue: null
+      otherRevenue: null,
+      weeksPerYear: null
     };
   }
 
@@ -542,6 +596,7 @@
         if (typeof emp.inC === 'undefined') emp.inC = true;
       });
       if (typeof parsed.otherRevenue === 'undefined') parsed.otherRevenue = null;
+      if (typeof parsed.weeksPerYear === 'undefined') parsed.weeksPerYear = null;
       return parsed;
     } catch (e) { return defaultState(); }
   }
@@ -778,6 +833,14 @@
     var totalRevenue = demandRevenue + otherRevenue;
     if (otherRevenue > 0) revenueKnown = true;
 
+    var A = scenario('inA'), B = scenario('inB'), C = scenario('inC');
+
+    function attachProfit(s) {
+      s.netProfit = (s.costKnown && revenueKnown) ? (totalRevenue - s.laborCost) : null;
+      s.marginPct = (s.netProfit !== null && totalRevenue > 0) ? (s.netProfit / totalRevenue) : null;
+    }
+    [A, B, C].forEach(attachProfit);
+
     return {
       demandHours: demandHours,
       demandRevenue: demandRevenue,
@@ -785,9 +848,9 @@
       totalRevenue: totalRevenue,
       revenueKnown: revenueKnown,
       clientCount: state.clients.filter(function (c) { return c.name && c.name.trim(); }).length,
-      A: scenario('inA'),
-      B: scenario('inB'),
-      C: scenario('inC')
+      A: A,
+      B: B,
+      C: C
     };
   }
 
@@ -890,12 +953,93 @@
       metric('Slack / deficit', c.s.capHours > 0 ? fmtHours(c.s.capHours - m.demandHours) + ' hrs' : '—',
         (c.s.capHours - m.demandHours) < 0 ? 'neg' : 'pos');
       metric('Weekly labor cost', c.s.costKnown ? fmtMoney(c.s.laborCost) : '—');
-      var margin = (c.s.costKnown && m.revenueKnown) ? (m.totalRevenue - c.s.laborCost) : null;
-      var marginLabel = 'Net profit on labor' + (m.otherRevenue > 0 ? ' (incl. other rev.)' : '');
-      metric(marginLabel, margin !== null ? fmtMoney(margin) : '—', margin !== null ? (margin < 0 ? 'neg' : 'pos') : '');
+      metric('Net profit on labor', c.s.netProfit !== null ? fmtMoney(c.s.netProfit) : '—',
+        c.s.netProfit !== null ? (c.s.netProfit < 0 ? 'neg' : 'pos') : '');
 
       card.appendChild(metrics);
       wrap.appendChild(card);
+    });
+  }
+
+  // ---------- render: profits ----------
+  function renderProfits(m) {
+    var weeks = (state.weeksPerYear !== null && state.weeksPerYear !== undefined && isFinite(state.weeksPerYear) && state.weeksPerYear > 0)
+      ? parseFloat(state.weeksPerYear) : null;
+
+    var rows = [
+      { label: 'A — Now', s: m.A },
+      { label: 'B — Hire a 3rd, step out', s: m.B },
+      { label: 'C — Hybrid', s: m.C }
+    ];
+
+    var body = document.getElementById('profit-body');
+    body.innerHTML = '';
+    rows.forEach(function (r) {
+      var tr = document.createElement('tr');
+      tr.appendChild(el('td', null, r.label));
+      tr.appendChild(el('td', 'num computed', r.s.costKnown ? fmtMoney(r.s.laborCost) : '—'));
+
+      var tdProfit = el('td', 'num computed', r.s.netProfit !== null ? fmtMoney(r.s.netProfit) : '—');
+      if (r.s.netProfit !== null) tdProfit.style.color = r.s.netProfit < 0 ? 'var(--critical)' : 'var(--good)';
+      tr.appendChild(tdProfit);
+
+      tr.appendChild(el('td', 'num computed', r.s.marginPct !== null ? fmtPct(r.s.marginPct) : '—'));
+
+      var annual = (r.s.netProfit !== null && weeks !== null) ? r.s.netProfit * weeks : null;
+      tr.appendChild(el('td', 'num computed', annual !== null ? fmtMoney(annual) : '—'));
+
+      body.appendChild(tr);
+    });
+
+    var chart = document.getElementById('profit-chart');
+    chart.innerHTML = '';
+    var values = rows.map(function (r) { return r.s.netProfit; }).filter(function (v) { return v !== null; });
+    if (values.length === 0) {
+      chart.appendChild(el('div', 'chart-empty', 'Add employee pay rates and at least one client rate to compare profit across scenarios.'));
+      return;
+    }
+
+    var minVal = Math.min(0, Math.min.apply(null, values));
+    var maxVal = Math.max(0, Math.max.apply(null, values));
+    var range = (maxVal - minVal) || 1;
+    var pad = range * 0.15;
+    minVal -= pad; maxVal += pad; range = maxVal - minVal;
+    var zeroPct = ((0 - minVal) / range) * 100;
+
+    rows.forEach(function (r) {
+      var v = r.s.netProfit;
+      var row = el('div', 'profit-bar-row');
+      row.appendChild(el('div', 'p-label', r.label));
+
+      var track = el('div', 'profit-bar-track');
+      var baseline = el('div', 'p-baseline');
+      baseline.style.left = zeroPct + '%';
+      track.appendChild(baseline);
+
+      if (v !== null) {
+        var vPct = ((v - minVal) / range) * 100;
+        var left = Math.min(zeroPct, vPct);
+        var width = Math.abs(vPct - zeroPct);
+        var fill = el('div', 'p-fill');
+        fill.style.left = left + '%';
+        fill.style.width = width + '%';
+        fill.style.background = v < 0 ? 'var(--critical)' : 'var(--good)';
+        track.appendChild(fill);
+
+        var label = el('div', 'p-value num', fmtMoney(v));
+        if (v >= 0) {
+          label.style.left = Math.min(left + width + 1, 88) + '%';
+          label.style.color = 'var(--good)';
+        } else {
+          label.style.left = Math.max(left - 1, 0) + '%';
+          label.style.transform = 'translate(-100%, -50%)';
+          label.style.color = 'var(--critical)';
+        }
+        track.appendChild(label);
+      }
+
+      row.appendChild(track);
+      chart.appendChild(row);
     });
   }
 
@@ -903,6 +1047,7 @@
     var m = compute();
     renderHeadline(m);
     renderScenarios(m);
+    renderProfits(m);
     // refresh computed client column without full table rebuild
     state.clients.forEach(function (c) {
       var row = document.querySelector('#client-body tr[data-id="' + c.id + '"]');
@@ -916,6 +1061,8 @@
   function syncOtherRevenueInput() {
     var input = document.getElementById('other-revenue');
     input.value = (state.otherRevenue === null || state.otherRevenue === undefined) ? '' : state.otherRevenue;
+    var weeksInput = document.getElementById('weeks-per-year');
+    weeksInput.value = (state.weeksPerYear === null || state.weeksPerYear === undefined) ? '' : state.weeksPerYear;
   }
 
   function fullRender() {
@@ -998,6 +1145,12 @@
 
   document.getElementById('other-revenue').addEventListener('input', function (e) {
     state.otherRevenue = e.target.value === '' ? null : parseFloat(e.target.value);
+    save();
+    renderAll();
+  });
+
+  document.getElementById('weeks-per-year').addEventListener('input', function (e) {
+    state.weeksPerYear = e.target.value === '' ? null : parseFloat(e.target.value);
     save();
     renderAll();
   });
