@@ -228,6 +228,14 @@
   @media (max-width: 980px) { .scenarios { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 620px) { .scenarios { grid-template-columns: 1fr; } }
 
+  .routes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 620px) { .routes-grid { grid-template-columns: 1fr; } }
+
   .scenario-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -502,6 +510,10 @@
 
   <div class="profit-chart" id="profit-chart"></div>
 
+  <h2 class="section">Routes — crew truck vs. your truck</h2>
+  <p class="section-note">Tag each recurring client below by which truck runs it. This checks each truck's own schedule — the crew can't absorb your truck's clients or vice versa, so pooled capacity can hide a truck that's over its head.</p>
+  <div class="routes-grid" id="routes"></div>
+
   <h2 class="section">Team &amp; hiring scenario</h2>
   <p class="section-note">Check a scenario column to include that person's hours in it. For backup capacity (like your reserve truck), set Hrs/wk to what you'd actually plan to cover, not a full-time number. Pay rate is optional — add it to see weekly labor cost and margin.</p>
   <div class="table-scroll">
@@ -531,11 +543,12 @@
     <table class="data">
       <thead>
         <tr>
-          <th style="width:26%">Client</th>
-          <th style="width:18%">Frequency</th>
-          <th class="num" style="width:14%">Hrs / visit</th>
-          <th class="num" style="width:14%">Rate ($/hr)</th>
-          <th class="num computed-col" style="width:14%">Hrs / wk</th>
+          <th style="width:22%">Client</th>
+          <th style="width:14%">Frequency</th>
+          <th style="width:13%">Route</th>
+          <th class="num" style="width:12%">Hrs / visit</th>
+          <th class="num" style="width:12%">Rate ($/hr)</th>
+          <th class="num computed-col" style="width:12%">Hrs / wk</th>
           <th style="width:60px"></th>
         </tr>
       </thead>
@@ -579,7 +592,7 @@
         { id: uid(), name: 'Prospective 3rd hire', role: 'Prospective hire', hours: 40, rate: null, inA: false, inB: true, inC: true }
       ],
       clients: [
-        { id: uid(), name: '', freq: 'weekly', hours: 2, rate: null }
+        { id: uid(), name: '', freq: 'weekly', hours: 2, rate: null, route: 'crew' }
       ],
       otherRevenue: null,
       weeksPerYear: null
@@ -594,6 +607,9 @@
       if (!parsed.employees || !parsed.clients) return defaultState();
       parsed.employees.forEach(function (emp) {
         if (typeof emp.inC === 'undefined') emp.inC = true;
+      });
+      parsed.clients.forEach(function (c) {
+        if (typeof c.route === 'undefined') c.route = 'crew';
       });
       if (typeof parsed.otherRevenue === 'undefined') parsed.otherRevenue = null;
       if (typeof parsed.weeksPerYear === 'undefined') parsed.weeksPerYear = null;
@@ -746,6 +762,18 @@
       tdFreq.appendChild(freqSel);
       tr.appendChild(tdFreq);
 
+      var tdRoute = el('td');
+      var routeSel = document.createElement('select');
+      routeSel.dataset.field = 'route';
+      [['crew', 'Crew truck'], ['you', 'Your truck']].forEach(function (pair) {
+        var opt = el('option', null, pair[1]);
+        opt.value = pair[0];
+        if (pair[0] === c.route) opt.selected = true;
+        routeSel.appendChild(opt);
+      });
+      tdRoute.appendChild(routeSel);
+      tr.appendChild(tdRoute);
+
       var tdHours = el('td', 'num');
       var hoursInput = el('input');
       hoursInput.type = 'number';
@@ -856,6 +884,33 @@
 
   var STATUS_LABEL = { good: 'Comfortable', warning: 'Tight', critical: 'Over capacity', neutral: 'No capacity set' };
 
+  // ---------- compute: per-truck routes ----------
+  function computeRoutes() {
+    var crewDemandHours = 0, crewRevenue = 0, crewRevenueKnown = false;
+    var youDemandHours = 0, youRevenue = 0, youRevenueKnown = false;
+    state.clients.forEach(function (c) {
+      var wh = weeklyHoursFor(c);
+      var hasRate = c.rate !== null && c.rate !== undefined && c.rate !== '' && isFinite(c.rate);
+      var rev = hasRate ? wh * parseFloat(c.rate) : 0;
+      if (c.route === 'you') {
+        youDemandHours += wh;
+        if (hasRate) { youRevenue += rev; youRevenueKnown = true; }
+      } else {
+        crewDemandHours += wh;
+        if (hasRate) { crewRevenue += rev; crewRevenueKnown = true; }
+      }
+    });
+    var crewCap = 0, youCap = 0;
+    state.employees.forEach(function (emp) {
+      var h = parseFloat(emp.hours) || 0;
+      if (emp.role === 'Owner') youCap += h; else crewCap += h;
+    });
+    return {
+      crew: { capHours: crewCap, demandHours: crewDemandHours, revenue: crewRevenue, revenueKnown: crewRevenueKnown },
+      you: { capHours: youCap, demandHours: youDemandHours, revenue: youRevenue, revenueKnown: youRevenueKnown, openHours: youCap - youDemandHours }
+    };
+  }
+
   // ---------- render: headline ----------
   function renderHeadline(m) {
     var wrap = document.getElementById('headline');
@@ -961,6 +1016,82 @@
     });
   }
 
+  // ---------- render: routes ----------
+  function renderRoutes(m) {
+    var r = computeRoutes();
+    var wrap = document.getElementById('routes');
+    wrap.innerHTML = '';
+
+    var scaleMax = Math.max(r.crew.capHours, r.crew.demandHours, r.you.capHours, r.you.demandHours, 1) * 1.15;
+
+    function statusFor(cap, demand) {
+      if (cap <= 0) return 'neutral';
+      var u = demand / cap;
+      if (u <= 0.85) return 'good';
+      if (u <= 1.0) return 'warning';
+      return 'critical';
+    }
+
+    var youTotalRevenue = r.you.revenue + m.otherRevenue;
+    var youRevenueKnown = r.you.revenueKnown || m.otherRevenue > 0;
+
+    var cards = [
+      { title: 'Crew truck', desc: 'Non-mandatory recurring clients', cap: r.crew.capHours, demand: r.crew.demandHours,
+        revenue: r.crew.revenue, revenueKnown: r.crew.revenueKnown, openHours: null },
+      { title: 'Your truck', desc: 'Mandatory clients, plus room for new or side work', cap: r.you.capHours, demand: r.you.demandHours,
+        revenue: youTotalRevenue, revenueKnown: youRevenueKnown, openHours: r.you.openHours }
+    ];
+
+    cards.forEach(function (c) {
+      var status = statusFor(c.cap, c.demand);
+      var card = el('div', 'scenario-card');
+      var head = el('div', 's-head');
+      head.appendChild(el('div', 's-title', c.title));
+      head.appendChild(el('div', 's-tag ' + status, STATUS_LABEL[status]));
+      card.appendChild(head);
+      card.appendChild(el('div', 's-desc', c.desc));
+
+      var bullet = el('div', 'bullet');
+      var fillColor = status === 'good' ? 'var(--accent)'
+        : status === 'warning' ? 'var(--warning-fill)'
+        : status === 'critical' ? 'var(--critical)'
+        : 'var(--surface-2)';
+      var fillWidth = Math.min(c.cap / scaleMax, 1) * 100;
+      var fill = el('div', 'fill');
+      fill.style.width = fillWidth + '%';
+      fill.style.background = fillColor;
+      if (fillWidth > 18) fill.appendChild(el('div', 'fill-label', fmtHours(c.cap) + 'h'));
+      bullet.appendChild(fill);
+
+      var markerPos = Math.min(c.demand / scaleMax, 1) * 100;
+      var marker = el('div', 'marker');
+      marker.style.left = markerPos + '%';
+      bullet.appendChild(marker);
+      var markerLabel = el('div', 'marker-label', fmtHours(c.demand) + 'h booked');
+      markerLabel.style.left = markerPos + '%';
+      bullet.appendChild(markerLabel);
+      card.appendChild(bullet);
+
+      var metrics = el('div', 's-metrics');
+      function metric(label, val, cls) {
+        var m2 = el('div');
+        m2.appendChild(el('div', 'm-label', label));
+        m2.appendChild(el('div', 'm-val num' + (cls ? ' ' + cls : ''), val));
+        metrics.appendChild(m2);
+      }
+      metric('Capacity', fmtHours(c.cap) + ' hrs/wk');
+      metric('Booked', fmtHours(c.demand) + ' hrs/wk');
+      metric('Revenue booked', c.revenueKnown ? fmtMoney(c.revenue) : '—');
+      if (c.openHours !== null) {
+        metric('Open for new business', fmtHours(c.openHours) + ' hrs/wk', c.openHours < 0 ? 'neg' : 'pos');
+      } else {
+        metric('Slack / deficit', c.cap > 0 ? fmtHours(c.cap - c.demand) + ' hrs' : '—', (c.cap - c.demand) < 0 ? 'neg' : 'pos');
+      }
+      card.appendChild(metrics);
+      wrap.appendChild(card);
+    });
+  }
+
   // ---------- render: profits ----------
   function renderProfits(m) {
     var weeks = (state.weeksPerYear !== null && state.weeksPerYear !== undefined && isFinite(state.weeksPerYear) && state.weeksPerYear > 0)
@@ -1047,6 +1178,7 @@
     var m = compute();
     renderHeadline(m);
     renderScenarios(m);
+    renderRoutes(m);
     renderProfits(m);
     // refresh computed client column without full table rebuild
     state.clients.forEach(function (c) {
@@ -1161,7 +1293,7 @@
     fullRender();
   });
   document.getElementById('add-client').addEventListener('click', function () {
-    state.clients.push({ id: uid(), name: '', freq: 'weekly', hours: 2, rate: null });
+    state.clients.push({ id: uid(), name: '', freq: 'weekly', hours: 2, rate: null, route: 'crew' });
     save();
     fullRender();
   });
