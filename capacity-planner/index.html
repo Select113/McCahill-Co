@@ -1,0 +1,933 @@
+<title>McCahill &amp; Co. — Field Capacity Planner</title>
+<style>
+  :root {
+    --bg: #f7f8f4;
+    --surface: #ffffff;
+    --surface-2: #eef1ec;
+    --border: #d9ddd2;
+    --ink: #1c2530;
+    --ink-dim: #5a6470;
+    --ink-muted: #8a9186;
+    --accent: #2f5d44;
+    --accent-strong: #234a35;
+    --accent-soft: #e8f0ea;
+    --good: #0ca30c;
+    --warning: #a86a00;
+    --warning-fill: #fab219;
+    --serious: #b5502a;
+    --critical: #d03b3b;
+    --shadow: 0 1px 2px rgba(28,37,48,0.06), 0 8px 24px -12px rgba(28,37,48,0.12);
+  }
+  :root[data-theme="dark"] {
+    --bg: #12160f;
+    --surface: #1a201a;
+    --surface-2: #212822;
+    --border: #313a2e;
+    --ink: #eef1ea;
+    --ink-dim: #b7bfb0;
+    --ink-muted: #83897d;
+    --accent: #6aac86;
+    --accent-strong: #8ac4a1;
+    --accent-soft: #1e2a20;
+    --good: #3fc23f;
+    --warning: #e0a940;
+    --warning-fill: #fab219;
+    --serious: #ec835a;
+    --critical: #e66767;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12160f;
+      --surface: #1a201a;
+      --surface-2: #212822;
+      --border: #313a2e;
+      --ink: #eef1ea;
+      --ink-dim: #b7bfb0;
+      --ink-muted: #83897d;
+      --accent: #6aac86;
+      --accent-strong: #8ac4a1;
+      --accent-soft: #1e2a20;
+      --good: #3fc23f;
+      --warning: #e0a940;
+      --warning-fill: #fab219;
+      --serious: #ec835a;
+      --critical: #e66767;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 32px 20px 80px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  .num { font-variant-numeric: tabular-nums; }
+  .mono {
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  header.top {
+    border-bottom: 3px solid var(--accent);
+    padding-bottom: 14px;
+    margin-bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  header.top .brand-name {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.3px;
+  }
+  header.top .brand-sub {
+    font-size: 11.5px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 2px;
+  }
+  header.top .doc-title {
+    text-align: right;
+    font-size: 12.5px;
+    color: var(--ink-dim);
+    line-height: 1.4;
+  }
+  header.top .doc-title strong { color: var(--ink); font-weight: 600; }
+
+  .intro {
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    max-width: 62ch;
+    margin: 0 0 28px;
+  }
+
+  h2.section {
+    font-size: 12px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+    margin: 40px 0 14px;
+  }
+  h2.section:first-of-type { margin-top: 0; }
+  .section-note {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin: -8px 0 16px;
+  }
+
+  /* headline stat row */
+  .headline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+  }
+  .stat-tile {
+    background: var(--surface);
+    padding: 16px 18px;
+  }
+  .stat-tile .label {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--ink-muted);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .stat-tile .value {
+    font-size: 25px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .stat-tile .value .unit {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-dim);
+    margin-left: 3px;
+  }
+  .stat-tile .sub { font-size: 11.5px; color: var(--ink-muted); margin-top: 4px; }
+
+  /* scenario legend */
+  .legend {
+    display: flex;
+    gap: 20px;
+    font-size: 11.5px;
+    color: var(--ink-dim);
+    margin-bottom: 14px;
+  }
+  .legend .item { display: flex; align-items: center; gap: 6px; }
+  .legend .swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .legend .swatch.cap { background: var(--accent); }
+  .legend .swatch.mark { width: 2px; height: 14px; border-radius: 0; background: var(--ink); }
+
+  .scenarios {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 680px) { .scenarios { grid-template-columns: 1fr; } }
+
+  .scenario-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px 20px;
+    box-shadow: var(--shadow);
+  }
+  .scenario-card .s-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .scenario-card .s-title { font-size: 14.5px; font-weight: 700; color: var(--ink); }
+  .scenario-card .s-tag {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+  }
+  .s-tag.good { color: var(--good); background: color-mix(in srgb, var(--good) 14%, transparent); }
+  .s-tag.warning { color: var(--warning); background: color-mix(in srgb, var(--warning-fill) 20%, transparent); }
+  .s-tag.critical { color: var(--critical); background: color-mix(in srgb, var(--critical) 16%, transparent); }
+  .s-tag.neutral { color: var(--ink-muted); background: var(--surface-2); }
+
+  .scenario-card .s-desc { font-size: 12px; color: var(--ink-muted); margin-bottom: 16px; }
+
+  .bullet {
+    position: relative;
+    height: 26px;
+    background: var(--surface-2);
+    border-radius: 5px;
+    margin: 6px 0 8px;
+    overflow: visible;
+  }
+  .bullet .fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    border-radius: 4px;
+    transition: width .25s ease;
+  }
+  .bullet .marker {
+    position: absolute;
+    top: -4px; bottom: -4px;
+    width: 2px;
+    background: var(--ink);
+  }
+  .bullet .marker-label {
+    position: absolute;
+    top: -20px;
+    transform: translateX(-50%);
+    font-size: 10.5px;
+    color: var(--ink-dim);
+    white-space: nowrap;
+  }
+  .bullet .fill-label {
+    position: absolute;
+    right: 8px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--surface);
+    text-shadow: none;
+  }
+
+  .s-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .s-metrics .m-label { font-size: 11px; color: var(--ink-muted); }
+  .s-metrics .m-val { font-size: 15px; font-weight: 600; color: var(--ink); margin-top: 1px; }
+  .s-metrics .m-val.pos { color: var(--good); }
+  .s-metrics .m-val.neg { color: var(--critical); }
+
+  /* tables */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); }
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    font-size: 13px;
+    min-width: 640px;
+  }
+  table.data th {
+    background: var(--surface-2);
+    color: var(--accent);
+    text-align: left;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  table.data td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  table.data tr:last-child td { border-bottom: none; }
+  table.data td.num, table.data th.num { text-align: right; }
+  table.data td.center, table.data th.center { text-align: center; }
+
+  table.data input[type="text"],
+  table.data input[type="number"],
+  table.data select {
+    width: 100%;
+    min-width: 64px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 5px 6px;
+    font-size: 13px;
+    color: var(--ink);
+    font-family: inherit;
+  }
+  table.data input[type="text"] { min-width: 120px; }
+  table.data input:hover, table.data select:hover { border-color: var(--border); }
+  table.data input:focus, table.data select:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  table.data input[type="number"] { text-align: right; font-variant-numeric: tabular-nums; }
+  table.data td.computed { color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+  table.data input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+
+  .row-actions { display: flex; justify-content: flex-end; }
+  button.icon-btn {
+    background: none; border: none; color: var(--ink-muted); cursor: pointer;
+    font-size: 16px; padding: 4px 6px; border-radius: 5px; line-height: 1;
+  }
+  button.icon-btn:hover { color: var(--critical); background: var(--surface-2); }
+
+  .table-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 4px 0;
+  }
+  button.add-row {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    border: 1px solid var(--border);
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button.add-row:hover { background: var(--accent); color: #fff; }
+
+  footer.foot {
+    margin-top: 44px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  footer.foot .hint { font-size: 11.5px; color: var(--ink-muted); max-width: 52ch; }
+  button.reset-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--ink-muted);
+    padding: 7px 13px;
+    border-radius: 7px;
+    font-size: 12px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  button.reset-btn:hover { color: var(--critical); border-color: var(--critical); }
+
+  ::selection { background: var(--accent-soft); }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="brand-name">McCahill &amp; Co.</div>
+      <div class="brand-sub">Field Capacity Planner</div>
+    </div>
+    <div class="doc-title">
+      <strong>Recurring bookings vs. crew capacity</strong><br>
+      Data stays on this device (browser local storage)
+    </div>
+  </header>
+
+  <p class="intro">
+    Enter every client with a standing/recurring visit, and everyone who works the field.
+    The two scenarios below compare your booked weekly hours against crew capacity —
+    today, and if you hire a third and step out of the field yourself.
+  </p>
+
+  <h2 class="section">This week, at a glance</h2>
+  <div class="headline" id="headline"></div>
+
+  <div class="legend">
+    <div class="item"><span class="swatch cap"></span> Field capacity (hrs/wk)</div>
+    <div class="item"><span class="swatch mark"></span> Booked demand (hrs/wk)</div>
+  </div>
+  <div class="scenarios" id="scenarios"></div>
+
+  <h2 class="section">Team &amp; hiring scenario</h2>
+  <p class="section-note">Check a scenario column to include that person's hours in it. Pay rate is optional — add it to see weekly labor cost and margin.</p>
+  <div class="table-scroll">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:24%">Name</th>
+          <th style="width:16%">Role</th>
+          <th class="num" style="width:12%">Hrs / wk</th>
+          <th class="num" style="width:14%">Pay rate ($/hr)</th>
+          <th class="center" style="width:9%">Scenario A</th>
+          <th class="center" style="width:9%">Scenario B</th>
+          <th style="width:60px"></th>
+        </tr>
+      </thead>
+      <tbody id="employee-body"></tbody>
+    </table>
+  </div>
+  <div class="table-footer">
+    <button class="add-row" id="add-employee">+ Add person</button>
+  </div>
+
+  <h2 class="section">Recurring clients</h2>
+  <p class="section-note">Only include clients on a standing schedule — one-off jobs don't belong in a weekly capacity read.</p>
+  <div class="table-scroll">
+    <table class="data">
+      <thead>
+        <tr>
+          <th style="width:26%">Client</th>
+          <th style="width:18%">Frequency</th>
+          <th class="num" style="width:14%">Hrs / visit</th>
+          <th class="num" style="width:14%">Rate ($/hr)</th>
+          <th class="num computed-col" style="width:14%">Hrs / wk</th>
+          <th style="width:60px"></th>
+        </tr>
+      </thead>
+      <tbody id="client-body"></tbody>
+    </table>
+  </div>
+  <div class="table-footer">
+    <button class="add-row" id="add-client">+ Add client</button>
+  </div>
+
+  <footer class="foot">
+    <div class="hint">
+      Figures are hours booked on a standing schedule, not hours actually worked — weather days, drive time and one-off jobs aren't in this model.
+    </div>
+    <button class="reset-btn" id="reset-data">Clear all data</button>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var STORAGE_KEY = 'mccahill-capacity-planner-v1';
+
+  var FREQ = {
+    weekly:     { label: 'Weekly',          mult: 1 },
+    biweekly:   { label: 'Every 2 weeks',   mult: 1/2 },
+    every3:     { label: 'Every 3 weeks',   mult: 1/3 },
+    every4:     { label: 'Every 4 weeks',   mult: 1/4 },
+    monthly:    { label: 'Monthly',         mult: 12/52 }
+  };
+
+  var ROLES = ['Owner', 'Field employee', 'Prospective hire'];
+
+  function uid() { return Math.random().toString(36).slice(2, 10); }
+
+  function defaultState() {
+    return {
+      employees: [
+        { id: uid(), name: 'You', role: 'Owner', hours: 40, rate: null, inA: true,  inB: false },
+        { id: uid(), name: '',    role: 'Field employee', hours: 40, rate: null, inA: true,  inB: true  },
+        { id: uid(), name: 'Prospective 3rd hire', role: 'Prospective hire', hours: 40, rate: null, inA: false, inB: true  }
+      ],
+      clients: [
+        { id: uid(), name: '', freq: 'weekly', hours: 2, rate: null }
+      ]
+    };
+  }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return defaultState();
+      var parsed = JSON.parse(raw);
+      if (!parsed.employees || !parsed.clients) return defaultState();
+      return parsed;
+    } catch (e) { return defaultState(); }
+  }
+
+  var state = loadState();
+
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function fmtHours(n) {
+    if (!isFinite(n)) return '—';
+    return (Math.round(n * 10) / 10).toString().replace(/\.0$/, '');
+  }
+  function fmtMoney(n) {
+    if (n === null || n === undefined || !isFinite(n)) return '—';
+    var sign = n < 0 ? '-' : '';
+    n = Math.abs(n);
+    return sign + '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  }
+  function fmtPct(n) {
+    if (!isFinite(n)) return '—';
+    return Math.round(n * 100) + '%';
+  }
+
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html !== undefined) e.innerHTML = html;
+    return e;
+  }
+
+  // ---------- render: employee table ----------
+  function renderEmployees() {
+    var body = document.getElementById('employee-body');
+    body.innerHTML = '';
+    state.employees.forEach(function (emp) {
+      var tr = document.createElement('tr');
+      tr.dataset.id = emp.id;
+
+      var tdName = el('td');
+      var nameInput = el('input');
+      nameInput.type = 'text';
+      nameInput.placeholder = 'Name';
+      nameInput.value = emp.name;
+      nameInput.dataset.field = 'name';
+      tdName.appendChild(nameInput);
+      tr.appendChild(tdName);
+
+      var tdRole = el('td');
+      var roleSel = document.createElement('select');
+      roleSel.dataset.field = 'role';
+      ROLES.forEach(function (r) {
+        var opt = el('option', null, r);
+        opt.value = r;
+        if (r === emp.role) opt.selected = true;
+        roleSel.appendChild(opt);
+      });
+      tdRole.appendChild(roleSel);
+      tr.appendChild(tdRole);
+
+      var tdHours = el('td', 'num');
+      var hoursInput = el('input');
+      hoursInput.type = 'number';
+      hoursInput.min = '0';
+      hoursInput.step = '0.5';
+      hoursInput.value = emp.hours;
+      hoursInput.dataset.field = 'hours';
+      tdHours.appendChild(hoursInput);
+      tr.appendChild(tdHours);
+
+      var tdRate = el('td', 'num');
+      var rateInput = el('input');
+      rateInput.type = 'number';
+      rateInput.min = '0';
+      rateInput.step = '0.5';
+      rateInput.placeholder = 'optional';
+      if (emp.rate !== null && emp.rate !== undefined) rateInput.value = emp.rate;
+      rateInput.dataset.field = 'rate';
+      tdRate.appendChild(rateInput);
+      tr.appendChild(tdRate);
+
+      var tdA = el('td', 'center');
+      var chkA = el('input');
+      chkA.type = 'checkbox';
+      chkA.checked = !!emp.inA;
+      chkA.dataset.field = 'inA';
+      tdA.appendChild(chkA);
+      tr.appendChild(tdA);
+
+      var tdB = el('td', 'center');
+      var chkB = el('input');
+      chkB.type = 'checkbox';
+      chkB.checked = !!emp.inB;
+      chkB.dataset.field = 'inB';
+      tdB.appendChild(chkB);
+      tr.appendChild(tdB);
+
+      var tdActions = el('td');
+      var actWrap = el('div', 'row-actions');
+      var delBtn = el('button', 'icon-btn', '✕');
+      delBtn.type = 'button';
+      delBtn.title = 'Remove';
+      delBtn.dataset.action = 'remove-employee';
+      actWrap.appendChild(delBtn);
+      tdActions.appendChild(actWrap);
+      tr.appendChild(tdActions);
+
+      body.appendChild(tr);
+    });
+  }
+
+  // ---------- render: client table ----------
+  function renderClients() {
+    var body = document.getElementById('client-body');
+    body.innerHTML = '';
+    state.clients.forEach(function (c) {
+      var tr = document.createElement('tr');
+      tr.dataset.id = c.id;
+
+      var tdName = el('td');
+      var nameInput = el('input');
+      nameInput.type = 'text';
+      nameInput.placeholder = 'Client name';
+      nameInput.value = c.name;
+      nameInput.dataset.field = 'name';
+      tdName.appendChild(nameInput);
+      tr.appendChild(tdName);
+
+      var tdFreq = el('td');
+      var freqSel = document.createElement('select');
+      freqSel.dataset.field = 'freq';
+      Object.keys(FREQ).forEach(function (k) {
+        var opt = el('option', null, FREQ[k].label);
+        opt.value = k;
+        if (k === c.freq) opt.selected = true;
+        freqSel.appendChild(opt);
+      });
+      tdFreq.appendChild(freqSel);
+      tr.appendChild(tdFreq);
+
+      var tdHours = el('td', 'num');
+      var hoursInput = el('input');
+      hoursInput.type = 'number';
+      hoursInput.min = '0';
+      hoursInput.step = '0.25';
+      hoursInput.value = c.hours;
+      hoursInput.dataset.field = 'hours';
+      tdHours.appendChild(hoursInput);
+      tr.appendChild(tdHours);
+
+      var tdRate = el('td', 'num');
+      var rateInput = el('input');
+      rateInput.type = 'number';
+      rateInput.min = '0';
+      rateInput.step = '0.5';
+      rateInput.placeholder = 'optional';
+      if (c.rate !== null && c.rate !== undefined) rateInput.value = c.rate;
+      rateInput.dataset.field = 'rate';
+      tdRate.appendChild(rateInput);
+      tr.appendChild(tdRate);
+
+      var tdComputed = el('td', 'num computed');
+      tdComputed.dataset.role = 'weekly-hours';
+      tdComputed.textContent = fmtHours(weeklyHoursFor(c));
+      tr.appendChild(tdComputed);
+
+      var tdActions = el('td');
+      var actWrap = el('div', 'row-actions');
+      var delBtn = el('button', 'icon-btn', '✕');
+      delBtn.type = 'button';
+      delBtn.title = 'Remove';
+      delBtn.dataset.action = 'remove-client';
+      actWrap.appendChild(delBtn);
+      tdActions.appendChild(actWrap);
+      tr.appendChild(tdActions);
+
+      body.appendChild(tr);
+    });
+  }
+
+  function weeklyHoursFor(c) {
+    var mult = FREQ[c.freq] ? FREQ[c.freq].mult : 1;
+    return (parseFloat(c.hours) || 0) * mult;
+  }
+
+  // ---------- compute ----------
+  function compute() {
+    var demandHours = 0, demandRevenue = 0, revenueKnown = false;
+    state.clients.forEach(function (c) {
+      var wh = weeklyHoursFor(c);
+      demandHours += wh;
+      if (c.rate !== null && c.rate !== undefined && c.rate !== '' && isFinite(c.rate)) {
+        demandRevenue += wh * parseFloat(c.rate);
+        revenueKnown = true;
+      }
+    });
+
+    function scenario(key) {
+      var capHours = 0, laborCost = 0, costKnown = false, headcount = 0;
+      state.employees.forEach(function (emp) {
+        if (!emp[key]) return;
+        var h = parseFloat(emp.hours) || 0;
+        capHours += h;
+        headcount += 1;
+        if (emp.rate !== null && emp.rate !== undefined && emp.rate !== '' && isFinite(emp.rate)) {
+          laborCost += h * parseFloat(emp.rate);
+          costKnown = true;
+        }
+      });
+      var utilization = capHours > 0 ? demandHours / capHours : null;
+      var status;
+      if (capHours <= 0) status = 'neutral';
+      else if (utilization <= 0.85) status = 'good';
+      else if (utilization <= 1.0) status = 'warning';
+      else status = 'critical';
+      return {
+        capHours: capHours, headcount: headcount,
+        laborCost: laborCost, costKnown: costKnown,
+        utilization: utilization, status: status
+      };
+    }
+
+    return {
+      demandHours: demandHours,
+      demandRevenue: demandRevenue,
+      revenueKnown: revenueKnown,
+      clientCount: state.clients.filter(function (c) { return c.name && c.name.trim(); }).length,
+      A: scenario('inA'),
+      B: scenario('inB')
+    };
+  }
+
+  var STATUS_LABEL = { good: 'Comfortable', warning: 'Tight', critical: 'Over capacity', neutral: 'No capacity set' };
+
+  // ---------- render: headline ----------
+  function renderHeadline(m) {
+    var wrap = document.getElementById('headline');
+    wrap.innerHTML = '';
+
+    var tiles = [
+      { label: 'Weekly billable hours booked', value: fmtHours(m.demandHours), unit: 'hrs/wk',
+        sub: m.clientCount + ' recurring client' + (m.clientCount === 1 ? '' : 's') },
+      { label: 'Weekly revenue booked', value: m.revenueKnown ? fmtMoney(m.demandRevenue) : '—', unit: '',
+        sub: m.revenueKnown ? 'from clients with a rate set' : 'add a client rate to see this' },
+      { label: 'Capacity today (Scenario A)', value: fmtHours(m.A.capHours), unit: 'hrs/wk',
+        sub: m.A.utilization !== null ? fmtPct(m.A.utilization) + ' booked' : 'set hours to compare' },
+      { label: 'Capacity, 3rd hire (Scenario B)', value: fmtHours(m.B.capHours), unit: 'hrs/wk',
+        sub: m.B.utilization !== null ? fmtPct(m.B.utilization) + ' booked' : 'set hours to compare' }
+    ];
+
+    tiles.forEach(function (t) {
+      var tile = el('div', 'stat-tile');
+      tile.appendChild(el('div', 'label', t.label));
+      var val = el('div', 'value num', t.value + (t.unit ? ' <span class="unit">' + t.unit + '</span>' : ''));
+      tile.appendChild(val);
+      tile.appendChild(el('div', 'sub', t.sub));
+      wrap.appendChild(tile);
+    });
+  }
+
+  // ---------- render: scenario cards ----------
+  function renderScenarios(m) {
+    var wrap = document.getElementById('scenarios');
+    wrap.innerHTML = '';
+
+    var scaleMax = Math.max(m.A.capHours, m.B.capHours, m.demandHours, 1) * 1.15;
+
+    var cards = [
+      {
+        title: 'Scenario A — Now',
+        desc: 'You in the field with your current crew',
+        s: m.A
+      },
+      {
+        title: 'Scenario B — Hire a 3rd, step out',
+        desc: 'Field crew only, no owner hours',
+        s: m.B
+      }
+    ];
+
+    cards.forEach(function (c) {
+      var card = el('div', 'scenario-card');
+      var head = el('div', 's-head');
+      head.appendChild(el('div', 's-title', c.title));
+      var tag = el('div', 's-tag ' + c.s.status, STATUS_LABEL[c.s.status]);
+      head.appendChild(tag);
+      card.appendChild(head);
+      card.appendChild(el('div', 's-desc', c.desc + ' · ' + c.s.headcount + ' on the schedule'));
+
+      var bullet = el('div', 'bullet');
+      var fillColor = c.s.status === 'good' ? 'var(--accent)'
+        : c.s.status === 'warning' ? 'var(--warning-fill)'
+        : c.s.status === 'critical' ? 'var(--critical)'
+        : 'var(--surface-2)';
+      var fillWidth = Math.min(c.s.capHours / scaleMax, 1) * 100;
+      var fill = el('div', 'fill');
+      fill.style.width = fillWidth + '%';
+      fill.style.background = fillColor;
+      if (fillWidth > 18) {
+        fill.appendChild(el('div', 'fill-label', fmtHours(c.s.capHours) + 'h'));
+      }
+      bullet.appendChild(fill);
+
+      var markerPos = Math.min(m.demandHours / scaleMax, 1) * 100;
+      var marker = el('div', 'marker');
+      marker.style.left = markerPos + '%';
+      bullet.appendChild(marker);
+      var markerLabel = el('div', 'marker-label', fmtHours(m.demandHours) + 'h booked');
+      markerLabel.style.left = markerPos + '%';
+      bullet.appendChild(markerLabel);
+
+      card.appendChild(bullet);
+
+      var metrics = el('div', 's-metrics');
+      function metric(label, val, cls) {
+        var m2 = el('div');
+        m2.appendChild(el('div', 'm-label', label));
+        m2.appendChild(el('div', 'm-val num' + (cls ? ' ' + cls : ''), val));
+        metrics.appendChild(m2);
+      }
+      metric('Utilization', c.s.utilization !== null ? fmtPct(c.s.utilization) : '—');
+      metric('Slack / deficit', c.s.capHours > 0 ? fmtHours(c.s.capHours - m.demandHours) + ' hrs' : '—',
+        (c.s.capHours - m.demandHours) < 0 ? 'neg' : 'pos');
+      metric('Weekly labor cost', c.s.costKnown ? fmtMoney(c.s.laborCost) : '—');
+      var margin = (c.s.costKnown && m.revenueKnown) ? (m.demandRevenue - c.s.laborCost) : null;
+      metric('Weekly margin', margin !== null ? fmtMoney(margin) : '—', margin !== null ? (margin < 0 ? 'neg' : 'pos') : '');
+
+      card.appendChild(metrics);
+      wrap.appendChild(card);
+    });
+  }
+
+  function renderAll() {
+    var m = compute();
+    renderHeadline(m);
+    renderScenarios(m);
+    // refresh computed client column without full table rebuild
+    state.clients.forEach(function (c) {
+      var row = document.querySelector('#client-body tr[data-id="' + c.id + '"]');
+      if (row) {
+        var cell = row.querySelector('[data-role="weekly-hours"]');
+        if (cell) cell.textContent = fmtHours(weeklyHoursFor(c));
+      }
+    });
+  }
+
+  function fullRender() {
+    renderEmployees();
+    renderClients();
+    renderAll();
+  }
+
+  // ---------- events ----------
+  function findRecord(list, id) {
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    return null;
+  }
+
+  document.getElementById('employee-body').addEventListener('input', function (e) {
+    var field = e.target.dataset.field;
+    if (!field) return;
+    var tr = e.target.closest('tr');
+    var rec = findRecord(state.employees, tr.dataset.id);
+    if (!rec) return;
+    if (field === 'hours' || field === 'rate') {
+      rec[field] = e.target.value === '' ? (field === 'rate' ? null : 0) : parseFloat(e.target.value);
+    } else {
+      rec[field] = e.target.value;
+    }
+    save();
+    renderAll();
+  });
+  document.getElementById('employee-body').addEventListener('change', function (e) {
+    var field = e.target.dataset.field;
+    if (!field) return;
+    var tr = e.target.closest('tr');
+    var rec = findRecord(state.employees, tr.dataset.id);
+    if (!rec) return;
+    if (e.target.type === 'checkbox') rec[field] = e.target.checked;
+    else rec[field] = e.target.value;
+    save();
+    renderAll();
+  });
+  document.getElementById('employee-body').addEventListener('click', function (e) {
+    if (e.target.dataset.action !== 'remove-employee') return;
+    var tr = e.target.closest('tr');
+    state.employees = state.employees.filter(function (r) { return r.id !== tr.dataset.id; });
+    save();
+    fullRender();
+  });
+
+  document.getElementById('client-body').addEventListener('input', function (e) {
+    var field = e.target.dataset.field;
+    if (!field) return;
+    var tr = e.target.closest('tr');
+    var rec = findRecord(state.clients, tr.dataset.id);
+    if (!rec) return;
+    if (field === 'hours' || field === 'rate') {
+      rec[field] = e.target.value === '' ? (field === 'rate' ? null : 0) : parseFloat(e.target.value);
+    } else {
+      rec[field] = e.target.value;
+    }
+    save();
+    renderAll();
+  });
+  document.getElementById('client-body').addEventListener('change', function (e) {
+    var field = e.target.dataset.field;
+    if (!field) return;
+    var tr = e.target.closest('tr');
+    var rec = findRecord(state.clients, tr.dataset.id);
+    if (!rec) return;
+    rec[field] = e.target.value;
+    save();
+    renderAll();
+  });
+  document.getElementById('client-body').addEventListener('click', function (e) {
+    if (e.target.dataset.action !== 'remove-client') return;
+    var tr = e.target.closest('tr');
+    state.clients = state.clients.filter(function (r) { return r.id !== tr.dataset.id; });
+    save();
+    fullRender();
+  });
+
+  document.getElementById('add-employee').addEventListener('click', function () {
+    state.employees.push({ id: uid(), name: '', role: 'Field employee', hours: 40, rate: null, inA: true, inB: true });
+    save();
+    fullRender();
+  });
+  document.getElementById('add-client').addEventListener('click', function () {
+    state.clients.push({ id: uid(), name: '', freq: 'weekly', hours: 2, rate: null });
+    save();
+    fullRender();
+  });
+
+  document.getElementById('reset-data').addEventListener('click', function () {
+    if (!confirm('Clear all clients and team data on this device? This cannot be undone.')) return;
+    state = defaultState();
+    save();
+    fullRender();
+  });
+
+  fullRender();
+})();
+</script>
