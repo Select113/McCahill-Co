@@ -167,6 +167,45 @@
   }
   .stat-tile .sub { font-size: 11.5px; color: var(--ink-muted); margin-top: 4px; }
 
+  .adjust-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .adjust-row label { font-size: 12.5px; color: var(--ink); font-weight: 600; }
+  .adjust-row .adjust-hint { font-weight: 400; color: var(--ink-muted); }
+  .adjust-input {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 4px 10px;
+    flex-shrink: 0;
+  }
+  .adjust-input:focus-within { border-color: var(--accent); }
+  .adjust-input .prefix, .adjust-input .suffix { font-size: 12.5px; color: var(--ink-muted); }
+  .adjust-input input {
+    width: 90px;
+    background: none;
+    border: none;
+    text-align: right;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    font-family: inherit;
+  }
+  .adjust-input input:focus { outline: none; }
+
   /* scenario legend */
   .legend {
     display: flex;
@@ -395,6 +434,15 @@
   <h2 class="section">This week, at a glance</h2>
   <div class="headline" id="headline"></div>
 
+  <div class="adjust-row">
+    <label for="other-revenue">Other weekly revenue <span class="adjust-hint">— side work, consulting, anything not tied to a client visit</span></label>
+    <div class="adjust-input">
+      <span class="prefix">$</span>
+      <input type="number" id="other-revenue" min="0" step="10" placeholder="0">
+      <span class="suffix">/ wk</span>
+    </div>
+  </div>
+
   <div class="legend">
     <div class="item"><span class="swatch cap"></span> Field capacity (hrs/wk)</div>
     <div class="item"><span class="swatch mark"></span> Booked demand (hrs/wk)</div>
@@ -479,7 +527,8 @@
       ],
       clients: [
         { id: uid(), name: '', freq: 'weekly', hours: 2, rate: null }
-      ]
+      ],
+      otherRevenue: null
     };
   }
 
@@ -492,6 +541,7 @@
       parsed.employees.forEach(function (emp) {
         if (typeof emp.inC === 'undefined') emp.inC = true;
       });
+      if (typeof parsed.otherRevenue === 'undefined') parsed.otherRevenue = null;
       return parsed;
     } catch (e) { return defaultState(); }
   }
@@ -723,9 +773,16 @@
       };
     }
 
+    var otherRevenue = (state.otherRevenue !== null && state.otherRevenue !== undefined && isFinite(state.otherRevenue))
+      ? parseFloat(state.otherRevenue) : 0;
+    var totalRevenue = demandRevenue + otherRevenue;
+    if (otherRevenue > 0) revenueKnown = true;
+
     return {
       demandHours: demandHours,
       demandRevenue: demandRevenue,
+      otherRevenue: otherRevenue,
+      totalRevenue: totalRevenue,
       revenueKnown: revenueKnown,
       clientCount: state.clients.filter(function (c) { return c.name && c.name.trim(); }).length,
       A: scenario('inA'),
@@ -833,8 +890,9 @@
       metric('Slack / deficit', c.s.capHours > 0 ? fmtHours(c.s.capHours - m.demandHours) + ' hrs' : '—',
         (c.s.capHours - m.demandHours) < 0 ? 'neg' : 'pos');
       metric('Weekly labor cost', c.s.costKnown ? fmtMoney(c.s.laborCost) : '—');
-      var margin = (c.s.costKnown && m.revenueKnown) ? (m.demandRevenue - c.s.laborCost) : null;
-      metric('Weekly margin', margin !== null ? fmtMoney(margin) : '—', margin !== null ? (margin < 0 ? 'neg' : 'pos') : '');
+      var margin = (c.s.costKnown && m.revenueKnown) ? (m.totalRevenue - c.s.laborCost) : null;
+      var marginLabel = 'Net profit on labor' + (m.otherRevenue > 0 ? ' (incl. other rev.)' : '');
+      metric(marginLabel, margin !== null ? fmtMoney(margin) : '—', margin !== null ? (margin < 0 ? 'neg' : 'pos') : '');
 
       card.appendChild(metrics);
       wrap.appendChild(card);
@@ -855,9 +913,15 @@
     });
   }
 
+  function syncOtherRevenueInput() {
+    var input = document.getElementById('other-revenue');
+    input.value = (state.otherRevenue === null || state.otherRevenue === undefined) ? '' : state.otherRevenue;
+  }
+
   function fullRender() {
     renderEmployees();
     renderClients();
+    syncOtherRevenueInput();
     renderAll();
   }
 
@@ -930,6 +994,12 @@
     state.clients = state.clients.filter(function (r) { return r.id !== tr.dataset.id; });
     save();
     fullRender();
+  });
+
+  document.getElementById('other-revenue').addEventListener('input', function (e) {
+    state.otherRevenue = e.target.value === '' ? null : parseFloat(e.target.value);
+    save();
+    renderAll();
   });
 
   document.getElementById('add-employee').addEventListener('click', function () {
