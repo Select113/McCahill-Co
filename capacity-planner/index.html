@@ -182,11 +182,12 @@
 
   .scenarios {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-bottom: 10px;
   }
-  @media (max-width: 680px) { .scenarios { grid-template-columns: 1fr; } }
+  @media (max-width: 980px) { .scenarios { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 620px) { .scenarios { grid-template-columns: 1fr; } }
 
   .scenario-card {
     background: var(--surface);
@@ -275,7 +276,7 @@
     border-collapse: collapse;
     background: var(--surface);
     font-size: 13px;
-    min-width: 640px;
+    min-width: 720px;
   }
   table.data th {
     background: var(--surface-2);
@@ -386,8 +387,9 @@
 
   <p class="intro">
     Enter every client with a standing/recurring visit, and everyone who works the field.
-    The two scenarios below compare your booked weekly hours against crew capacity —
-    today, and if you hire a third and step out of the field yourself.
+    The three scenarios below compare your booked weekly hours against crew capacity —
+    today, if you hire a third and step out entirely, and a hybrid where the crew runs
+    the routes with you held in reserve as flex backup.
   </p>
 
   <h2 class="section">This week, at a glance</h2>
@@ -400,17 +402,18 @@
   <div class="scenarios" id="scenarios"></div>
 
   <h2 class="section">Team &amp; hiring scenario</h2>
-  <p class="section-note">Check a scenario column to include that person's hours in it. Pay rate is optional — add it to see weekly labor cost and margin.</p>
+  <p class="section-note">Check a scenario column to include that person's hours in it. For backup capacity (like your reserve truck), set Hrs/wk to what you'd actually plan to cover, not a full-time number. Pay rate is optional — add it to see weekly labor cost and margin.</p>
   <div class="table-scroll">
     <table class="data">
       <thead>
         <tr>
-          <th style="width:24%">Name</th>
-          <th style="width:16%">Role</th>
-          <th class="num" style="width:12%">Hrs / wk</th>
-          <th class="num" style="width:14%">Pay rate ($/hr)</th>
-          <th class="center" style="width:9%">Scenario A</th>
-          <th class="center" style="width:9%">Scenario B</th>
+          <th style="width:20%">Name</th>
+          <th style="width:13%">Role</th>
+          <th class="num" style="width:10%">Hrs / wk</th>
+          <th class="num" style="width:12%">Pay rate ($/hr)</th>
+          <th class="center" style="width:8%">A · Now</th>
+          <th class="center" style="width:8%">B · 3rd, step out</th>
+          <th class="center" style="width:8%">C · Hybrid</th>
           <th style="width:60px"></th>
         </tr>
       </thead>
@@ -470,9 +473,9 @@
   function defaultState() {
     return {
       employees: [
-        { id: uid(), name: 'You', role: 'Owner', hours: 40, rate: null, inA: true,  inB: false },
-        { id: uid(), name: '',    role: 'Field employee', hours: 40, rate: null, inA: true,  inB: true  },
-        { id: uid(), name: 'Prospective 3rd hire', role: 'Prospective hire', hours: 40, rate: null, inA: false, inB: true  }
+        { id: uid(), name: 'You', role: 'Owner', hours: 40, rate: null, inA: true,  inB: false, inC: true },
+        { id: uid(), name: '',    role: 'Field employee', hours: 40, rate: null, inA: true,  inB: true,  inC: true },
+        { id: uid(), name: 'Prospective 3rd hire', role: 'Prospective hire', hours: 40, rate: null, inA: false, inB: true, inC: true }
       ],
       clients: [
         { id: uid(), name: '', freq: 'weekly', hours: 2, rate: null }
@@ -486,6 +489,9 @@
       if (!raw) return defaultState();
       var parsed = JSON.parse(raw);
       if (!parsed.employees || !parsed.clients) return defaultState();
+      parsed.employees.forEach(function (emp) {
+        if (typeof emp.inC === 'undefined') emp.inC = true;
+      });
       return parsed;
     } catch (e) { return defaultState(); }
   }
@@ -583,6 +589,14 @@
       chkB.dataset.field = 'inB';
       tdB.appendChild(chkB);
       tr.appendChild(tdB);
+
+      var tdC = el('td', 'center');
+      var chkC = el('input');
+      chkC.type = 'checkbox';
+      chkC.checked = !!emp.inC;
+      chkC.dataset.field = 'inC';
+      tdC.appendChild(chkC);
+      tr.appendChild(tdC);
 
       var tdActions = el('td');
       var actWrap = el('div', 'row-actions');
@@ -715,7 +729,8 @@
       revenueKnown: revenueKnown,
       clientCount: state.clients.filter(function (c) { return c.name && c.name.trim(); }).length,
       A: scenario('inA'),
-      B: scenario('inB')
+      B: scenario('inB'),
+      C: scenario('inC')
     };
   }
 
@@ -731,10 +746,12 @@
         sub: m.clientCount + ' recurring client' + (m.clientCount === 1 ? '' : 's') },
       { label: 'Weekly revenue booked', value: m.revenueKnown ? fmtMoney(m.demandRevenue) : '—', unit: '',
         sub: m.revenueKnown ? 'from clients with a rate set' : 'add a client rate to see this' },
-      { label: 'Capacity today (Scenario A)', value: fmtHours(m.A.capHours), unit: 'hrs/wk',
+      { label: 'Capacity — A · Now', value: fmtHours(m.A.capHours), unit: 'hrs/wk',
         sub: m.A.utilization !== null ? fmtPct(m.A.utilization) + ' booked' : 'set hours to compare' },
-      { label: 'Capacity, 3rd hire (Scenario B)', value: fmtHours(m.B.capHours), unit: 'hrs/wk',
-        sub: m.B.utilization !== null ? fmtPct(m.B.utilization) + ' booked' : 'set hours to compare' }
+      { label: 'Capacity — B · 3rd, step out', value: fmtHours(m.B.capHours), unit: 'hrs/wk',
+        sub: m.B.utilization !== null ? fmtPct(m.B.utilization) + ' booked' : 'set hours to compare' },
+      { label: 'Capacity — C · Hybrid', value: fmtHours(m.C.capHours), unit: 'hrs/wk',
+        sub: m.C.utilization !== null ? fmtPct(m.C.utilization) + ' booked' : 'set hours to compare' }
     ];
 
     tiles.forEach(function (t) {
@@ -752,18 +769,23 @@
     var wrap = document.getElementById('scenarios');
     wrap.innerHTML = '';
 
-    var scaleMax = Math.max(m.A.capHours, m.B.capHours, m.demandHours, 1) * 1.15;
+    var scaleMax = Math.max(m.A.capHours, m.B.capHours, m.C.capHours, m.demandHours, 1) * 1.15;
 
     var cards = [
       {
-        title: 'Scenario A — Now',
+        title: 'A — Now',
         desc: 'You in the field with your current crew',
         s: m.A
       },
       {
-        title: 'Scenario B — Hire a 3rd, step out',
+        title: 'B — Hire a 3rd, step out',
         desc: 'Field crew only, no owner hours',
         s: m.B
+      },
+      {
+        title: 'C — Hybrid',
+        desc: 'Crew runs the routes, you held as flex backup',
+        s: m.C
       }
     ];
 
@@ -911,7 +933,7 @@
   });
 
   document.getElementById('add-employee').addEventListener('click', function () {
-    state.employees.push({ id: uid(), name: '', role: 'Field employee', hours: 40, rate: null, inA: true, inB: true });
+    state.employees.push({ id: uid(), name: '', role: 'Field employee', hours: 40, rate: null, inA: true, inB: true, inC: true });
     save();
     fullRender();
   });
