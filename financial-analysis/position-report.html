@@ -136,7 +136,7 @@ footer{border-top:1px solid var(--hair);padding-top:22px;color:var(--muted);font
   figure traces to a bank line. Nothing is inferred to make a total work.</p>
   <div class="stamp">
     <span><b>Prepared</b> September 4, 2026</span>
-    <span><b>Source</b> 200 transactions, 2 bank accounts</span>
+    <span><b>Source</b> 200 bank lines · 7 card statements · 2 invoice trackers</span>
     <span><b>Reconciliation</b> balances to $0.00</span>
     <span><b>GST/HST</b> 740677638 RT0001</span>
   </div>
@@ -166,7 +166,8 @@ footer{border-top:1px solid var(--hair);padding-top:22px;color:var(--muted);font
       <tr class="sub"><td>Cash and near-cash</td><td>117,118.26</td><td class="txt"></td></tr>
       <tr><td>Personal investments — Wealthsimple</td><td>17,900.00</td><td class="txt">Your figure, conditionally liquid</td></tr>
       <tr class="total"><td>Total liquid position</td><td>135,018.26</td><td class="txt"></td></tr>
-      <tr class="rule"><td>Excluded — disputed receivable, Invoice&nbsp;#40</td><td>15,925.09</td><td class="txt">Not cash. Contested, at lawyer-brief stage.</td></tr>
+      <tr class="rule"><td>Excluded — accounts receivable, both entities</td><td>80,604.29</td><td class="txt">Invoiced, work done, money not received. See section 05.</td></tr>
+      <tr><td>Excluded — disputed receivable, Invoice&nbsp;#40</td><td>15,925.09</td><td class="txt">Included in the line above. Contested, at lawyer-brief stage.</td></tr>
       <tr><td>Excluded — two cheques returned unpaid</td><td>20,569.01</td><td class="txt">Not cash. Deposited twice, returned twice.</td></tr>
       <tr><td>Excluded — vehicles, equipment, tools, inventory</td><td class="txt">not counted</td><td class="txt">Non-cash assets, per your instruction.</td></tr>
     </tbody>
@@ -380,7 +381,84 @@ footer{border-top:1px solid var(--hair);padding-top:22px;color:var(--muted);font
 </section>
 
 <section>
-  <div class="sechead"><span class="n">05</span><span class="t"><h2>What I could not verify</h2></span>
+<section>
+  <div class="sechead"><span class="n">05</span><span class="t"><h2>What you are owed</h2></span>
+    <span class="note">from the two invoice trackers</span></div>
+  <div class="callout">
+    <h3>The corporation has invoiced $52,338 since July 1 and collected $1,329</h3>
+    <p>That is a <span class="num">2.5%</span> collection rate on two months of work. Across both
+    entities you are owed <span class="num">$80,604</span> — equal to 81% of every dollar of cash you
+    have. This is the most serious operational finding in the report, and it is not a tax problem or
+    a margin problem. It is a billing-and-collections problem.</p>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Billing cycle</th><th>Invoiced</th><th>Collected</th><th>Outstanding</th><th class="txt">Status</th></tr></thead>
+    <tbody>
+      <tr class="head"><td colspan="5">Sole proprietorship</td></tr>
+      <tr><td>Cycle 1 · Feb 11–23</td><td>39,244.70</td><td>39,244.70</td><td>—</td><td class="txt">Fully collected</td></tr>
+      <tr><td>Cycle 2 · Feb 26 – Mar 31</td><td>38,550.27</td><td>38,190.27</td><td class="neg">360.00</td><td class="txt">Josh unpaid</td></tr>
+      <tr><td>Cycle 3 · Apr 1–30</td><td>61,790.32</td><td>61,475.32</td><td class="neg">315.00</td><td class="txt">Josh unpaid</td></tr>
+      <tr><td>Cycle 4 · May 1–31</td><td>45,904.02</td><td>29,204.02</td><td class="neg">16,700.00</td><td class="txt">Jenica, Sen, Bill, Josh unpaid; Teresa $15,500 pending</td></tr>
+      <tr><td>Cycle 5 · Jun 1–30</td><td>65,222.41</td><td>53,002.16</td><td class="neg">12,220.25</td><td class="txt">Trudy, Stratta ×2, Josh, Andrei, Anita unpaid</td></tr>
+      <tr class="sub"><td>Sole prop total</td><td>250,711.72</td><td>221,116.47</td><td class="neg">29,595.25</td><td class="txt"></td></tr>
+      <tr class="head"><td colspan="5">Corporation</td></tr>
+      <tr><td>Cycle 6 · Jul 1–31</td><td>18,217.32</td><td>909.30</td><td class="neg">17,308.02</td><td class="txt">Only Beverly and Sen paid</td></tr>
+      <tr><td>Cycle 7 · Aug 1–31</td><td>34,121.02</td><td>420.00</td><td class="neg">33,701.02</td><td class="txt">Only Beverly paid</td></tr>
+      <tr class="sub"><td>Corporation, work done</td><td>52,338.34</td><td>1,329.30</td><td class="neg">51,009.04</td><td class="txt">2.5% collected</td></tr>
+      <tr class="rule"><td>Cycles 8–11 · Sep–Dec</td><td>80,264.60</td><td>—</td><td>—</td><td class="txt">Forecast. Not worked, not invoiced.</td></tr>
+      <tr class="total"><td>TOTAL RECEIVABLE</td><td>303,050.06</td><td>222,445.77</td><td class="neg">80,604.29</td><td class="txt"></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="cap">Invoiced and collected are read from the red/green marking on your trackers. The
+  Sep–Dec cycles are excluded from the receivable total because that work has not happened — it is a
+  forecast, and treating it as an asset would be the same mistake as counting the cash twice.</p>
+
+  <div class="prose">
+    <p>Set the two years side by side and the pattern is unmistakable. Under the sole proprietorship
+    you collected 88% of what you invoiced. Since incorporating you have collected 2.5%. The work is
+    getting done and the invoices are largely going out — the money is simply not coming back.</p>
+    <p>Some of that is timing: August invoices are not yet overdue. But July's are, and $17,308 of
+    July work is still outstanding as of September 4. On the sole-prop side, Josh has gone unpaid in
+    four consecutive cycles for a cumulative $1,367.50, which is less a receivable than a decision
+    that needs making.</p>
+  </div>
+
+  <div class="figures">
+    <div class="fig"><div class="l">Invoiced, work done</div><div class="v">$303,050</div>
+      <div class="d">Feb 11 through Aug 31, both entities.</div></div>
+    <div class="fig hi"><div class="l">Collected in cash</div><div class="v">$237,314</div>
+      <div class="d">Per the bank. 78% of what was invoiced.</div></div>
+    <div class="fig warn"><div class="l">Still owed to you</div><div class="v">$80,604</div>
+      <div class="d">Not cash. Excluded from every liquid figure.</div></div>
+    <div class="fig"><div class="l">Forecast Sep–Dec</div><div class="v">$80,265</div>
+      <div class="d">Not worked, not invoiced, not an asset.</div></div>
+  </div>
+
+  <div class="callout caution">
+    <h3>Three things in the trackers that do not match the bank</h3>
+    <p><strong>A $32,500 French Drain deposit marked paid that never reached your account.</strong>
+    Cycle 5 shows Trudy's French Drain at $32,500 with "50% DEPOSIT PAID" and a note that Ryan
+    collected it, plus a separate $3,500 remainder marked unpaid against "MEETING WITH RYAN". No
+    $32,500 appears in June, July or August. The closest match is the $32,000 cheque deposited into
+    the <em>corporate</em> account on August 28. If that is the same money, revenue earned by the
+    sole proprietorship in June was collected into the corporation two months later, and $500 is
+    unaccounted for. This sits alongside the $10,000 that went to "Ryan Roberts (Personal Ac…)" in
+    June, and needs a clear answer.</p>
+    <p><strong>Roughly $19,453 of deposits from payers who appear nowhere in the trackers.</strong>
+    Pacific City Developments Inc. ($9,827.79 across three payments), Mark A ($4,556), David C
+    Newsome ($1,992.38), Bruce D Reid ($1,758.75), Yuhuan Bai, Wei Zhao and Christine Adrienne
+    Schwartz. These may be tracker clients under different legal names — but Pacific City is a
+    company, not one of the first names on your sheet, and $9,828 is too much revenue to be
+    untracked.</p>
+    <p><strong>Carol Ann's $2,397 is marked paid but not sent, with "WORK NEEDS TO BE SCHEDULED".</strong>
+    If you have taken money for work not yet performed, that is a customer deposit — a liability, not
+    revenue — and it should not be spent.</p>
+  </div>
+</section>
+
+  <div class="sechead"><span class="n">06</span><span class="t"><h2>What I could not verify</h2></span>
     <span class="note">$92,000 of movement needing your answer</span></div>
   <div class="prose">
     <p>Cash is proven. Purpose is not. Roughly $92,000 of movement across the seven months cannot be
@@ -389,10 +467,16 @@ footer{border-top:1px solid var(--hair);padding-top:22px;color:var(--muted);font
   </div>
   <div class="qgrid">
     <div class="q">
-      <div class="found"><span>Credit card payments to AMEX and Canadian Tire Bank</span><span class="amt">$35,996.88</span></div>
-      <div><dt>What I found</dt><dd>Sixteen payments across the period — AMEX $21,441.14 in eight payments, Canadian Tire Bank $14,555.74 in eight. The card statements were not provided, so what was bought is entirely unknown.</dd></div>
-      <div><dt>Why it matters</dt><dd>This is the largest single gap. If it is fuel, materials and equipment it is deductible and carries roughly $1,714 of recoverable GST. If any of it is personal, it is not deductible and your taxable income rises.</dd></div>
-      <div><dt>What to send</dt><dd>AMEX and Canadian Tire statements, February through August.</dd></div>
+      <div class="found"><span>Credit card payments — half now resolved, half still unknown</span><span class="amt">$21,441.14</span></div>
+      <div><dt>What I found</dt><dd>Seven Triangle Mastercard statements resolved the Canadian Tire side: $18,608.82 of purchases, which parse to each statement's own stated total to the cent. It is <strong>90% business</strong> — MacNutt Enterprises $4,265, Slegg $2,450, Home Depot $1,912, Canadian Tire $2,450, Peninsula Landscape Supply $1,522, Western Equipment $1,331, plus Satinflower, K2 Stone and Russell Nursery. Only $1,162 is personal. AMEX, at $21,441.14 across eight payments, is still unopened.</dd></div>
+      <div><dt>Why it matters</dt><dd>This materially improves the picture. That $16,785 of business supply spending was real cost the analysis could not previously see, and it carries roughly $829 of recoverable GST. It also confirms the gross margin was overstated. The remaining AMEX gap is now the single largest unknown in the report.</dd></div>
+      <div><dt>What to send</dt><dd>AMEX statements, February through August.</dd></div>
+    </div>
+    <div class="q">
+      <div class="found"><span>A card in your personal name, paid from the business account</span><span class="amt">$14,555.74</span></div>
+      <div><dt>What I found</dt><dd>Triangle Mastercard 5446…6409 is in Kyle McCahill's personal name with a $5,500 limit. Of $17,280.97 in payments against it, $14,555.74 came from the business account and $2,725.23 from elsewhere — the three payments before April 28, which predate any business payment to the card.</dd></div>
+      <div><dt>Why it matters</dt><dd>The spending is overwhelmingly business, so this is mostly a bookkeeping and paperwork problem rather than a tax one. But $1,162 of personal spending was funded by the business, which is a draw and not a deduction, and CRA scrutinises personal-name cards paid by a company. The June statement shows a $6,307.73 balance against a $5,500 limit.</dd></div>
+      <div><dt>What to send</dt><dd>Nothing — but consider a card in the corporation's name before next season.</dd></div>
     </div>
     <div class="q">
       <div class="found"><span>Transfers to and from “Canopyco” and “McCahill &amp; Co.”</span><span class="amt">$32,914.00</span></div>
@@ -434,7 +518,7 @@ footer{border-top:1px solid var(--hair);padding-top:22px;color:var(--muted);font
 </section>
 
 <section>
-  <div class="sechead"><span class="n">06</span><span class="t"><h2>What you owe before you spend anything</h2></span>
+  <div class="sechead"><span class="n">07</span><span class="t"><h2>What you owe before you spend anything</h2></span>
     <span class="note">estimates · verify before filing</span></div>
   <div class="callout">
     <h3>Source deductions and GST are trust funds, and you are personally liable</h3>
@@ -451,15 +535,16 @@ footer{border-top:1px solid var(--hair);padding-top:22px;color:var(--muted);font
     <tbody>
       <tr><td>GST collected on revenue</td><td class="txt">5/105 of $237,314 collected</td><td>11,300.66</td><td class="txt">High — revenue is verified</td></tr>
       <tr><td>Less input tax credits on supplier costs</td><td class="txt">5/105 of $29,498</td><td class="pos">(1,404.66)</td><td class="txt">High</td></tr>
-      <tr><td>Less input tax credits on card spending</td><td class="txt">5/105 of $35,997, if all business</td><td class="pos">(1,714.14)</td><td class="txt">Low — depends on card statements</td></tr>
-      <tr class="sub"><td>Net GST owing</td><td class="txt"></td><td>8,181.86</td><td class="txt"></td></tr>
+      <tr><td>Less input tax credits — Triangle Mastercard</td><td class="txt">5/105 of $17,407 business and fuel purchases</td><td class="pos">(828.92)</td><td class="txt">High — statements parsed and validated</td></tr>
+      <tr><td>Less input tax credits — AMEX</td><td class="txt">5/105 of $21,441, if all business</td><td class="pos">(1,021.01)</td><td class="txt">Low — statements not provided</td></tr>
+      <tr class="sub"><td>Net GST owing</td><td class="txt"></td><td>8,046.07</td><td class="txt"></td></tr>
       <tr class="rule"><td>CPP, employee and employer</td><td class="txt">$16,382 gross, less exemption, at 5.95% × 2</td><td>1,532.93</td><td class="txt">Medium — 2025 rates used</td></tr>
       <tr><td>EI, employee and employer</td><td class="txt">1.64% × 2.4</td><td>644.78</td><td class="txt">Medium</td></tr>
       <tr><td>Income tax that should have been withheld</td><td class="txt">12% assumed blended rate</td><td>1,965.81</td><td class="txt">Low — needs real calculation</td></tr>
       <tr><td>Late remittance penalty</td><td class="txt">10%, first failure</td><td>414.35</td><td class="txt">Medium</td></tr>
       <tr class="sub"><td>Payroll remittance exposure</td><td class="txt">Kierran only</td><td>4,557.87</td><td class="txt"></td></tr>
       <tr class="rule"><td>Personal income tax on sole prop profit</td><td class="txt">$109,359 profit at 30% blended</td><td>32,807.84</td><td class="txt">Low — see caveat below</td></tr>
-      <tr class="total"><td>Total estimated CRA obligation</td><td class="txt"></td><td>45,548.00</td><td class="txt"></td></tr>
+      <tr class="total"><td>Total estimated CRA obligation</td><td class="txt"></td><td>45,412.21</td><td class="txt"></td></tr>
     </tbody>
   </table>
   </div>
@@ -478,7 +563,7 @@ footer{border-top:1px solid var(--hair);padding-top:22px;color:var(--muted);font
 </section>
 
 <section>
-  <div class="sechead"><span class="n">07</span><span class="t"><h2>What you can actually deploy</h2></span>
+  <div class="sechead"><span class="n">08</span><span class="t"><h2>What you can actually deploy</h2></span>
     <span class="note">and what it buys</span></div>
   <div class="figures">
     <div class="fig"><div class="l">Cash on hand</div><div class="v">$99,267</div><div class="d">Verified</div></div>
@@ -532,7 +617,7 @@ footer{border-top:1px solid var(--hair);padding-top:22px;color:var(--muted);font
 </section>
 
 <section>
-  <div class="sechead"><span class="n">08</span><span class="t"><h2>Next season</h2></span>
+  <div class="sechead"><span class="n">09</span><span class="t"><h2>Next season</h2></span>
     <span class="note">three scenarios · Feb 2027 – Jan 2028</span></div>
   <div class="scroll">
   <table>
@@ -574,37 +659,48 @@ footer{border-top:1px solid var(--hair);padding-top:22px;color:var(--muted);font
 </section>
 
 <section>
-  <div class="sechead"><span class="n">09</span><span class="t"><h2>Where this leaves you</h2></span>
+  <div class="sechead"><span class="n">10</span><span class="t"><h2>Where this leaves you</h2></span>
     <span class="note">the short version</span></div>
   <div class="prose">
     <p><strong>Your total liquid position is $135,018.</strong> $67,159 in the sole proprietor's EQ
     account, $32,108 in the corporation's, $17,851 in TD chequing and $17,900 at Wealthsimple. Strip
     out the investments, whose accessibility depends on how the account is registered, and you have
     $117,118 in true cash.</p>
-    <p><strong>The business generated $99,267 of net cash from a zero start</strong>, after paying you
-    $33,387. In cash terms the first season was a success.</p>
-    <p><strong>Roughly $45,548 of that is not yours.</strong> Unremitted GST, unremitted payroll
+    <p><strong>The business invoiced $303,050 and collected $237,314.</strong> From a zero start in
+    February, that is a genuinely strong first season — but it also means <strong>$80,604 is still
+    owed to you</strong>, equal to 81% of the cash you hold.</p>
+    <p><strong>Collections broke down at incorporation.</strong> Under the sole proprietorship you
+    collected 88% of what you invoiced. Since July 1 the corporation has invoiced $52,338 and
+    collected $1,329 — 2.5%. Nothing about the work changed. The billing and chasing did. Fixing this
+    is worth more than any cost saving available to you.</p>
+    <p><strong>Roughly $45,412 of your cash is not yours.</strong> Unremitted GST, unremitted payroll
     deductions with penalty, and the personal tax on sole-proprietorship profit. Open a separate
-    savings account and move it out of the operating account this week — money that sits in a
-    chequing account gets spent.</p>
+    savings account and move it out of the operating account this week.</p>
     <p><strong>Deployable business capital is about $11,058.</strong> That funds an equipment budget
-    or a financed vehicle down payment. It does not fund a cash vehicle purchase, and it does not fund
-    a second hire in the same year as a vehicle. Your personal $17,851 is not a second source of
-    capital here — a large share of it is spoken for by the same personal tax bill.</p>
-    <p><strong>The biggest uses of cash were you and your credit cards.</strong> $33,387 in owner
-    draws and $35,997 in card payments together account for $69,384 — more than double what went to
-    suppliers. The card spending is the single largest thing in this report that nobody can currently
-    explain.</p>
-    <p><strong>Two structural problems need your accountant before January 31.</strong> The corporation
-    traded for two months out of the sole proprietor's bank account, and your $4,000 monthly draw is an
-    undeclared shareholder loan. Both are fixable now and expensive later.</p>
+    or a financed vehicle down payment — not a cash vehicle purchase, and not a second hire in the
+    same year as a vehicle. Your personal $17,851 is not a second source of capital; much of it is
+    spoken for by the same personal tax bill.</p>
+    <p><strong>The biggest uses of cash were you and your suppliers.</strong> $33,387 in owner draws
+    and $35,997 in card payments. The Triangle card is now resolved and was 90% legitimate business
+    supply — MacNutt, Slegg, Home Depot, Peninsula Landscape. AMEX, at $21,441, remains unopened and
+    is the last material unknown.</p>
+    <p><strong>Two structural problems need your accountant before January 31.</strong> The
+    corporation traded for two months out of the sole proprietor's bank account, and your $4,000
+    monthly draw is an undeclared shareholder loan. Both are fixable now and expensive later.</p>
+    <p><strong>One question outranks the rest:</strong> where is the $32,500 French Drain deposit
+    your tracker says was collected? It is not in any statement. The nearest candidate is the $32,000
+    that appeared in the corporate account on August 28 — in the wrong entity, and $500 light.</p>
   </div>
   <div class="callout caution">
     <h3>Send these four things and this becomes a complete picture</h3>
-    <p>AMEX and Canadian Tire statements February–August · TD and Wealthsimple statements January–August ·
-    what Canopyco is and who Ryan Roberts is · whether each individual you paid was an employee, a
-    subcontractor, or being reimbursed. Those four answers resolve about $92,000 of unexplained movement
-    and firm up the tax reserve, which is currently the least reliable number here.</p>
+    <p><strong>1.</strong> AMEX statements, February–August — the last $21,441 of unexplained spending.
+    <strong>2.</strong> Where the $32,500 French Drain deposit went, and who Ryan Roberts is.
+    <strong>3.</strong> Whether each individual you paid — Booker, Michelle, Isayas, Kevin, Declan and
+    the rest — was an employee, a subcontractor, or being reimbursed for materials.
+    <strong>4.</strong> What Canopyco is. Those four answers close almost everything still open, and
+    firm up the tax reserve, which remains the least reliable number here.</p>
+    <p style="margin-top:10px">Then do the one thing that matters more than all of it: chase the
+    $51,009 the corporation is owed for July and August.</p>
   </div>
 </section>
 
