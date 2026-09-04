@@ -1,0 +1,621 @@
+<title>McCahill Cash Position</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#F5F7F3; --surface:#FCFCFB; --sunk:#EDF0EA;
+  --ink:#16201B; --ink-2:#3D4A42; --muted:#697467; --hair:#D6DCD2; --hair-2:#E4E9E0;
+  --accent:#2F5D44; --pos:#0B7D63; --neg:#C74A12; --caution:#8A6410;
+  --neg-wash:#FBEDE7; --caution-wash:#FAF3E2; --pos-wash:#E8F3EE;
+  --shadow:0 1px 2px rgba(22,32,27,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#101310; --surface:#181C18; --sunk:#1F241F;
+    --ink:#E7EBE5; --ink-2:#BCC5BB; --muted:#8B968A; --hair:#2C332C; --hair-2:#242A24;
+    --accent:#7FBF9C; --pos:#3FA88A; --neg:#DE6E42; --caution:#D3A548;
+    --neg-wash:#2A1A13; --caution-wash:#26200F; --pos-wash:#14261F;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#101310; --surface:#181C18; --sunk:#1F241F;
+  --ink:#E7EBE5; --ink-2:#BCC5BB; --muted:#8B968A; --hair:#2C332C; --hair-2:#242A24;
+  --accent:#7FBF9C; --pos:#3FA88A; --neg:#DE6E42; --caution:#D3A548;
+  --neg-wash:#2A1A13; --caution-wash:#26200F; --pos-wash:#14261F;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px;line-height:1.6;margin:0;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px 96px}
+.prose{max-width:68ch}
+h1,h2,h3{font-family:Newsreader,Georgia,serif;text-wrap:balance;font-weight:500;margin:0}
+h1{font-size:clamp(30px,4.6vw,46px);line-height:1.1;letter-spacing:-.015em}
+h2{font-size:clamp(21px,2.6vw,27px);line-height:1.2;margin-bottom:6px}
+h3{font-size:17px;font-weight:600;margin-bottom:4px}
+p{margin:0 0 14px}
+a{color:var(--accent)}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+header.masthead{border-bottom:1px solid var(--hair);padding:56px 0 30px;margin-bottom:38px}
+.sub{color:var(--ink-2);font-size:17px;max-width:62ch;margin-top:14px}
+.stamp{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:22px;font-family:"IBM Plex Mono",monospace;
+  font-size:11.5px;color:var(--muted);letter-spacing:.02em}
+.stamp b{color:var(--ink-2);font-weight:500}
+
+section{margin:0 0 52px;scroll-margin-top:20px}
+.sechead{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--hair);
+  padding-bottom:10px;margin-bottom:20px}
+.sechead .n{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent);
+  letter-spacing:.1em;flex:none;padding-top:3px}
+.sechead .t{flex:1}
+.sechead .note{font-size:12px;color:var(--muted);flex:none;text-align:right}
+
+.figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;
+  background:var(--hair);border:1px solid var(--hair);border-radius:3px;overflow:hidden;margin:0 0 26px}
+.fig{background:var(--surface);padding:18px 20px 16px}
+.fig .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;
+  font-family:"IBM Plex Mono",monospace;margin-bottom:7px}
+.fig .v{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:500;letter-spacing:-.02em;
+  line-height:1.05;font-variant-numeric:tabular-nums}
+.fig .d{font-size:12.5px;color:var(--muted);margin-top:7px;line-height:1.45}
+.fig.hi{background:var(--pos-wash)} .fig.hi .v{color:var(--accent)}
+.fig.warn{background:var(--neg-wash)} .fig.warn .v{color:var(--neg)}
+.fig.unk .v{color:var(--muted);font-size:19px;font-weight:400}
+
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 12px;
+  border:1px solid var(--hair);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
+th,td{padding:8px 13px;text-align:right;border-bottom:1px solid var(--hair-2);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal;min-width:210px}
+thead th{background:var(--sunk);font-size:11px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--muted);font-weight:600;font-family:"IBM Plex Mono",monospace;
+  position:sticky;top:0;border-bottom:1px solid var(--hair)}
+tbody td:not(:first-child){font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+tr.rule td{border-top:1px solid var(--hair)}
+tr.total td{font-weight:600;background:var(--sunk);border-top:1.5px solid var(--accent);
+  border-bottom:1px solid var(--hair)}
+tr.sub td{font-weight:600;background:var(--pos-wash)}
+tr.head td{font-weight:600;color:var(--accent);background:var(--sunk);font-size:12px;
+  text-transform:uppercase;letter-spacing:.06em;font-family:"IBM Plex Mono",monospace}
+td.neg{color:var(--neg)} td.pos{color:var(--pos)}
+td.txt,th.txt{text-align:left;white-space:normal;font-family:"IBM Plex Sans",sans-serif;color:var(--muted);font-size:12.5px;min-width:180px}
+.cap{font-size:12.5px;color:var(--muted);margin:0 0 26px;max-width:74ch}
+
+.callout{border-left:2.5px solid var(--neg);background:var(--neg-wash);padding:15px 18px;
+  margin:0 0 20px;border-radius:0 3px 3px 0}
+.callout.caution{border-left-color:var(--caution);background:var(--caution-wash)}
+.callout.ok{border-left-color:var(--accent);background:var(--pos-wash)}
+.callout h3{margin-bottom:5px;font-family:"IBM Plex Sans",sans-serif;font-size:14px;
+  text-transform:uppercase;letter-spacing:.06em}
+.callout p:last-child{margin-bottom:0}
+.callout .num{font-weight:600}
+
+.qgrid{display:flex;flex-direction:column;gap:1px;background:var(--hair);
+  border:1px solid var(--hair);border-radius:3px;overflow:hidden}
+.q{background:var(--surface);padding:16px 20px;display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);gap:6px 24px}
+.q .found{grid-column:1/-1;font-weight:600;font-size:14.5px;display:flex;
+  justify-content:space-between;align-items:baseline;gap:16px}
+.q .found .amt{font-family:"IBM Plex Mono",monospace;font-weight:500;flex:none;color:var(--neg)}
+.q dt{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+  font-family:"IBM Plex Mono",monospace;margin-bottom:3px}
+.q dd{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+@media(max-width:720px){.q{grid-template-columns:1fr}}
+
+figure{margin:0 0 26px}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:22px}
+.chartbox{background:var(--surface);border:1px solid var(--hair);border-radius:3px;padding:16px 16px 10px}
+.chartbox h3{font-family:"IBM Plex Sans",sans-serif;font-size:12px;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--muted);margin-bottom:12px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.ax{font-family:"IBM Plex Mono",monospace;font-size:9.5px;fill:var(--muted)}
+.vl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:500}
+.grid-l{stroke:var(--hair-2);stroke-width:1}
+.zero-l{stroke:var(--hair);stroke-width:1.25}
+
+ul{margin:0 0 14px;padding-left:20px} li{margin-bottom:7px}
+.tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10px;
+  text-transform:uppercase;letter-spacing:.07em;padding:2px 7px;border-radius:2px;
+  border:1px solid currentColor;vertical-align:1px}
+.tag.est{color:var(--caution)} .tag.fact{color:var(--pos)} .tag.gap{color:var(--neg)}
+footer{border-top:1px solid var(--hair);padding-top:22px;color:var(--muted);font-size:12.5px;max-width:74ch}
+</style>
+
+<div class="wrap">
+<header class="masthead">
+  <p class="eyebrow">McCahill &amp; Co. · Landscape Construction &amp; Design · Victoria BC</p>
+  <h1>Where the money actually is</h1>
+  <p class="sub">A reconciled cash position for the sole proprietorship, the corporation and you
+  personally, built from the EQ Bank statements for February 9 through August 31, 2026. Every business
+  figure traces to a bank line. Nothing is inferred to make a total work.</p>
+  <div class="stamp">
+    <span><b>Prepared</b> September 4, 2026</span>
+    <span><b>Source</b> 200 transactions, 2 bank accounts</span>
+    <span><b>Reconciliation</b> balances to $0.00</span>
+    <span><b>GST/HST</b> 740677638 RT0001</span>
+  </div>
+</header>
+
+<section>
+  <div class="sechead"><span class="n">01</span><span class="t"><h2>The position</h2></span>
+    <span class="note">at August 31, 2026</span></div>
+  <div class="figures">
+    <div class="fig hi"><div class="l">Total liquid</div><div class="v">$135,018</div>
+      <div class="d">Business cash plus personal chequing and investments.</div></div>
+    <div class="fig"><div class="l">Business cash</div><div class="v">$99,267</div>
+      <div class="d">Both EQ accounts, verified against closing statement balances.</div></div>
+    <div class="fig"><div class="l">Personal chequing · TD</div><div class="v">$17,851</div>
+      <div class="d">Balance as stated by you. No statements reviewed.</div></div>
+    <div class="fig"><div class="l">Investments · Wealthsimple</div><div class="v">$17,900</div>
+      <div class="d">Liquidity depends on registration — see below.</div></div>
+  </div>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Where the money is</th><th>Amount</th><th class="txt">Basis</th></tr></thead>
+    <tbody>
+      <tr><td>Personal chequing — TD</td><td>17,851.00</td><td class="txt">Your figure, unverified</td></tr>
+      <tr><td>Sole proprietorship — EQ 400101914</td><td>67,159.36</td><td class="txt">Statement, reconciled</td></tr>
+      <tr><td>Corporation — EQ 400190507</td><td>32,107.90</td><td class="txt">Statement, reconciled</td></tr>
+      <tr class="sub"><td>Cash and near-cash</td><td>117,118.26</td><td class="txt"></td></tr>
+      <tr><td>Personal investments — Wealthsimple</td><td>17,900.00</td><td class="txt">Your figure, conditionally liquid</td></tr>
+      <tr class="total"><td>Total liquid position</td><td>135,018.26</td><td class="txt"></td></tr>
+      <tr class="rule"><td>Excluded — disputed receivable, Invoice&nbsp;#40</td><td>15,925.09</td><td class="txt">Not cash. Contested, at lawyer-brief stage.</td></tr>
+      <tr><td>Excluded — two cheques returned unpaid</td><td>20,569.01</td><td class="txt">Not cash. Deposited twice, returned twice.</td></tr>
+      <tr><td>Excluded — vehicles, equipment, tools, inventory</td><td class="txt">not counted</td><td class="txt">Non-cash assets, per your instruction.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="cap">The Wealthsimple balance sits below the cash subtotal because its liquidity is
+  conditional: if it is a TFSA it is genuinely accessible, if it is an RRSP a withdrawal is taxable
+  and withheld at source, and either way selling may trigger a capital gain. Confirm which it is
+  before counting it as available. Receivables, returned cheques and physical assets are excluded
+  from every liquid figure in this report.</p>
+
+  <div class="callout">
+    <h3>Not all of this is yours</h3>
+    <p>An estimated <span class="num">$45,548</span> of the $99,267 business balance is owed to CRA —
+    unremitted GST, unremitted payroll source deductions with penalty, and the personal income tax on
+    five months of sole-proprietorship profit. Deducting it leaves <span class="num">$53,720</span>.
+    After holding a three-month operating reserve, genuinely deployable capital is
+    <span class="num">$11,058</span>. The personal tax portion is the largest single piece, and it
+    falls on <em>you</em>, not the company — so your $17,851 personal chequing balance is not a
+    free-and-clear cushion either.</p>
+  </div>
+
+  <div class="prose">
+    <p>The headline is that the season worked. You started from a zero balance on February 9 and
+    ended August with just under a hundred thousand dollars across two accounts, having drawn
+    $33,387 personally along the way. That is a real result for a first year.</p>
+    <p>The complication is that the business has been running as though the tax has already been
+    dealt with. It has not. Nothing has been remitted for GST or payroll this year, and the
+    sole-proprietorship profit will land on your personal return in April. Those three obligations
+    consume slightly less than half the business cash on hand.</p>
+    <p>One number worth sitting with: $33,387 left the business for your personal account between
+    February and August, and $17,851 of it is still there. The rest — roughly $15,500 — went to
+    living costs over seven months, which is about $2,200 a month. That is a useful floor to know
+    when you decide what to pay yourself next year.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><span class="n">02</span><span class="t"><h2>How the cash accumulated</h2></span>
+    <span class="note">Feb–Aug 2026 · actuals</span></div>
+  <figure>
+    <div class="charts">
+      <div class="chartbox">
+        <h3>Closing cash, both accounts</h3>
+        <svg viewBox="0 0 420 210" role="img" aria-label="Closing cash rose from $26,168 in February to $99,267 in August, dipping to $19,056 in March and $75,427 in July.">
+          <line class="grid-l" x1="52" y1="20"  x2="410" y2="20"/>
+          <line class="grid-l" x1="52" y1="60"  x2="410" y2="60"/>
+          <line class="grid-l" x1="52" y1="100" x2="410" y2="100"/>
+          <line class="grid-l" x1="52" y1="140" x2="410" y2="140"/>
+          <line class="zero-l" x1="52" y1="180" x2="410" y2="180"/>
+          <text class="ax" x="46" y="23"  text-anchor="end">$120k</text>
+          <text class="ax" x="46" y="63"  text-anchor="end">$90k</text>
+          <text class="ax" x="46" y="103" text-anchor="end">$60k</text>
+          <text class="ax" x="46" y="143" text-anchor="end">$30k</text>
+          <text class="ax" x="46" y="183" text-anchor="end">$0</text>
+          <path d="M75,145.1 L131,154.6 L187,85.4 L243,44.1 L299,72.2 L355,79.4 L411,47.6 L411,180 L75,180 Z"
+                fill="var(--accent)" opacity="0.12"/>
+          <polyline points="75,145.1 131,154.6 187,85.4 243,44.1 299,72.2 355,79.4 411,47.6"
+                fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="411" cy="47.6" r="4.5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>
+          <text class="vl" x="405" y="36" text-anchor="end" fill="var(--accent)">$99.3k</text>
+          <circle cx="131" cy="154.6" r="3.5" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.75"/>
+          <text class="vl" x="131" y="170" text-anchor="middle" fill="var(--muted)">$19.1k</text>
+          <text class="ax" x="75"  y="198" text-anchor="middle">Feb</text>
+          <text class="ax" x="131" y="198" text-anchor="middle">Mar</text>
+          <text class="ax" x="187" y="198" text-anchor="middle">Apr</text>
+          <text class="ax" x="243" y="198" text-anchor="middle">May</text>
+          <text class="ax" x="299" y="198" text-anchor="middle">Jun</text>
+          <text class="ax" x="355" y="198" text-anchor="middle">Jul</text>
+          <text class="ax" x="411" y="198" text-anchor="middle">Aug</text>
+        </svg>
+      </div>
+      <div class="chartbox">
+        <h3>Net cash change each month</h3>
+        <svg viewBox="0 0 420 210" role="img" aria-label="Monthly net cash change: February plus $26,168, March minus $7,112, April plus $51,900, May plus $30,959, June minus $21,073, July minus $5,414, August plus $23,840.">
+          <line class="grid-l" x1="52" y1="24"  x2="410" y2="24"/>
+          <line class="grid-l" x1="52" y1="76"  x2="410" y2="76"/>
+          <line class="zero-l" x1="52" y1="128" x2="410" y2="128"/>
+          <line class="grid-l" x1="52" y1="180" x2="410" y2="180"/>
+          <text class="ax" x="46" y="27"  text-anchor="end">+$60k</text>
+          <text class="ax" x="46" y="79"  text-anchor="end">+$30k</text>
+          <text class="ax" x="46" y="131" text-anchor="end">$0</text>
+          <text class="ax" x="46" y="183" text-anchor="end">–$30k</text>
+          <rect x="62"  y="82.6"  width="38" height="45.4" rx="4" fill="var(--pos)"/>
+          <rect x="112" y="128"   width="38" height="12.3" rx="4" fill="var(--neg)"/>
+          <rect x="162" y="38.0"  width="38" height="90.0" rx="4" fill="var(--pos)"/>
+          <rect x="212" y="74.3"  width="38" height="53.7" rx="4" fill="var(--pos)"/>
+          <rect x="262" y="128"   width="38" height="36.5" rx="4" fill="var(--neg)"/>
+          <rect x="312" y="128"   width="38" height="9.4"  rx="4" fill="var(--neg)"/>
+          <rect x="362" y="86.7"  width="38" height="41.3" rx="4" fill="var(--pos)"/>
+          <text class="vl" x="81"  y="76"  text-anchor="middle" fill="var(--pos)">26.2</text>
+          <text class="vl" x="131" y="152" text-anchor="middle" fill="var(--neg)">–7.1</text>
+          <text class="vl" x="181" y="31"  text-anchor="middle" fill="var(--pos)">51.9</text>
+          <text class="vl" x="231" y="67"  text-anchor="middle" fill="var(--pos)">31.0</text>
+          <text class="vl" x="281" y="176" text-anchor="middle" fill="var(--neg)">–21.1</text>
+          <text class="vl" x="331" y="149" text-anchor="middle" fill="var(--neg)">–5.4</text>
+          <text class="vl" x="381" y="80"  text-anchor="middle" fill="var(--pos)">23.8</text>
+          <text class="ax" x="81"  y="200" text-anchor="middle">Feb</text>
+          <text class="ax" x="131" y="200" text-anchor="middle">Mar</text>
+          <text class="ax" x="181" y="200" text-anchor="middle">Apr</text>
+          <text class="ax" x="231" y="200" text-anchor="middle">May</text>
+          <text class="ax" x="281" y="200" text-anchor="middle">Jun</text>
+          <text class="ax" x="331" y="200" text-anchor="middle">Jul</text>
+          <text class="ax" x="381" y="200" text-anchor="middle">Aug</text>
+        </svg>
+      </div>
+    </div>
+  </figure>
+  <p class="cap">Figures in thousands of dollars. April and May carried the year — $82,859 of net
+  cash accumulation across two months, against a June and July that together gave back $26,487.
+  August recovers only because of a single $32,000 cheque deposited into the new corporate account
+  on the 28th.</p>
+
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Month</th><th>Revenue in</th><th>Suppliers</th><th>Labour, unidentified</th>
+    <th>Payroll</th><th>Card payments</th><th>Owner draws</th><th>Other</th><th>Net change</th>
+    <th>Closing cash</th></tr></thead>
+    <tbody>
+      <tr><td>February</td><td>37,038</td><td class="neg">(11,408)</td><td>—</td><td>—</td><td class="neg">(1,063)</td><td>—</td><td>1,600</td><td class="pos">26,168</td><td>26,168</td></tr>
+      <tr><td>March</td><td>19,292</td><td class="neg">(5,183)</td><td class="neg">(5,487)</td><td class="neg">(3,273)</td><td class="neg">(7,117)</td><td>—</td><td class="neg">(5,344)</td><td class="neg">(7,112)</td><td>19,056</td></tr>
+      <tr><td>April</td><td>62,857</td><td class="neg">(2,012)</td><td class="neg">(2,747)</td><td class="neg">(3,520)</td><td class="neg">(2,583)</td><td>—</td><td class="neg">(94)</td><td class="pos">51,900</td><td>70,956</td></tr>
+      <tr><td>May</td><td>60,627</td><td class="neg">(3,196)</td><td class="neg">(4,762)</td><td class="neg">(3,044)</td><td class="neg">(8,637)</td><td class="neg">(17,600)</td><td>7,570</td><td class="pos">30,959</td><td>101,914</td></tr>
+      <tr><td>June</td><td>20,562</td><td class="neg">(7,699)</td><td class="neg">(3,438)</td><td class="neg">(1,571)</td><td class="neg">(7,046)</td><td class="neg">(11,787)</td><td class="neg">(10,094)</td><td class="neg">(21,073)</td><td>80,841</td></tr>
+      <tr class="rule"><td>July</td><td>4,250</td><td>—</td><td class="neg">(446)</td><td class="neg">(2,815)</td><td class="neg">(6,310)</td><td>—</td><td class="neg">(94)</td><td class="neg">(5,414)</td><td>75,427</td></tr>
+      <tr><td>August</td><td>33,457</td><td>—</td><td class="neg">(224)</td><td class="neg">(2,160)</td><td class="neg">(3,239)</td><td class="neg">(4,000)</td><td>6</td><td class="pos">23,840</td><td>99,267</td></tr>
+      <tr class="total"><td>Feb–Aug</td><td>238,084</td><td class="neg">(29,498)</td><td class="neg">(17,105)</td><td class="neg">(16,382)</td><td class="neg">(35,997)</td><td class="neg">(33,387)</td><td class="neg">(6,448)</td><td class="pos">99,267</td><td>99,267</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="cap">Revenue in is gross cash received including GST, net of two returned cheques.
+  The horizontal rule marks July 1, the date the corporation took over. Note that the split between
+  suppliers and card payments is not a real cost split — see section 05.</p>
+</section>
+
+<section>
+  <div class="sechead"><span class="n">03</span><span class="t"><h2>The reconciliation</h2></span>
+    <span class="note">the check that makes the rest trustworthy</span></div>
+  <div class="prose">
+    <p>Both accounts were opened from zero this year, which removes the usual hardest problem — there
+    is no unverifiable opening balance to inherit. Every transaction was re-added in statement order
+    and checked against the running balance printed on each line.</p>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Step</th><th>Sole prop 400101914</th><th>Corporation 400190507</th><th>Total</th></tr></thead>
+    <tbody>
+      <tr><td>Opening cash before Feb 1, 2026</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+      <tr><td>Net movement, Feb 1 – Jun 30</td><td class="pos">80,841.11</td><td>—</td><td class="pos">80,841.11</td></tr>
+      <tr><td>Net movement, Jul 1 – Aug 31</td><td class="neg">(13,681.75)</td><td class="pos">32,107.90</td><td class="pos">18,426.15</td></tr>
+      <tr class="sub"><td>Calculated closing cash</td><td>67,159.36</td><td>32,107.90</td><td>99,267.26</td></tr>
+      <tr><td>Closing balance per statement</td><td>67,159.36</td><td>32,107.90</td><td>99,267.26</td></tr>
+      <tr class="total"><td>Difference</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout ok">
+    <h3>The reconciliation balances exactly</h3>
+    <p>200 transactions, no chain breaks, no missing statement months, no forced entries. The cash
+    figures in this report are facts. What is <em>uncertain</em> is not how much money there is, but
+    what a good deal of it was spent on — which is a different problem, addressed in section 05.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><span class="n">04</span><span class="t"><h2>The two entities</h2></span>
+    <span class="note">and the problem between them</span></div>
+  <div class="callout caution">
+    <h3>The corporation has been operating out of the sole proprietor's bank account</h3>
+    <p>You told me the corporation took over on July 1. Its bank account did not open until
+    <strong>August 28</strong>. Every dollar earned and spent between those two dates — revenue of
+    $5,421, payroll of $4,975, card payments of $9,549, and a $4,000 draw to yourself — moved through
+    the sole proprietor's account. Two months of corporate trading sit in the wrong entity's books.</p>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Line</th><th>Sole prop<br>Feb 1 – Jun 30</th><th>Jul 1 – Aug 31<br>(in sole prop account)</th><th>Corporation<br>Aug 28 – 31</th></tr></thead>
+    <tbody>
+      <tr><td>Gross revenue collected, incl. GST</td><td>199,892.59</td><td>5,421.25</td><td>32,000.00</td></tr>
+      <tr><td>Less GST at 5/105</td><td class="neg">(9,518.69)</td><td class="neg">(258.15)</td><td class="neg">(1,523.81)</td></tr>
+      <tr class="sub"><td>Revenue excluding GST</td><td>190,373.90</td><td>5,163.10</td><td>30,476.19</td></tr>
+      <tr><td>Interest earned</td><td>483.69</td><td>278.14</td><td>7.90</td></tr>
+      <tr><td>Suppliers — K2 Stone, PND, excavation, plants</td><td class="neg">(28,093.18)</td><td>—</td><td>—</td></tr>
+      <tr class="sub"><td>Gross margin</td><td>162,280.71</td><td>5,163.10</td><td>30,476.19</td></tr>
+      <tr><td>Payroll — Kierran and Wave</td><td class="neg">(11,407.17)</td><td class="neg">(4,974.56)</td><td>—</td></tr>
+      <tr><td>Labour, payee unidentified</td><td class="neg">(16,434.97)</td><td class="neg">(669.99)</td><td>—</td></tr>
+      <tr><td>Insurance — Gore Mutual</td><td class="neg">(374.66)</td><td class="neg">(187.24)</td><td>—</td></tr>
+      <tr><td>Credit card payments, contents unknown</td><td class="neg">(25,188.12)</td><td class="neg">(9,094.62)</td><td>—</td></tr>
+      <tr class="total"><td>Approximate operating profit, cash basis</td><td>109,359.48</td><td class="neg">(9,485.17)</td><td>30,484.09</td></tr>
+      <tr class="head"><td colspan="4">From profit to cash</td></tr>
+      <tr><td>GST collected, still in the account</td><td>9,518.69</td><td>258.15</td><td>1,523.81</td></tr>
+      <tr><td>GST embedded in costs</td><td class="neg">(2,664.07)</td><td class="neg">(454.73)</td><td>—</td></tr>
+      <tr><td>Owner draws to personal</td><td class="neg">(29,387.00)</td><td class="neg">(4,000.00)</td><td>—</td></tr>
+      <tr><td>Owner capital contributed</td><td>1,600.00</td><td>—</td><td>100.00</td></tr>
+      <tr><td>Unidentified transfers out</td><td class="neg">(7,586.00)</td><td>—</td><td>—</td></tr>
+      <tr class="total"><td>Net cash movement</td><td>80,841.11</td><td class="neg">(13,681.75)</td><td>32,107.90</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="cap">The middle column is legally corporate trading recorded in a sole proprietor's
+  account. Its $9,485 loss is real but incomplete — July and August carried the payroll and overhead
+  of a season whose revenue had already been collected in April and May.</p>
+  <div class="prose">
+    <p>Read the two working periods side by side and the seasonality is stark. February through June
+    collected $199,893 of gross revenue. July and August collected $37,421 between them, and $32,000
+    of that arrived in the final four days of August. Meanwhile payroll, insurance and card payments
+    carried on at roughly $7,300 a month.</p>
+    <p>That is the shape of a landscaping year in Victoria, and it is the single most important thing
+    to plan around: the money arrives in a fifteen-week window and has to last twelve months.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><span class="n">05</span><span class="t"><h2>What I could not verify</h2></span>
+    <span class="note">$92,000 of movement needing your answer</span></div>
+  <div class="prose">
+    <p>Cash is proven. Purpose is not. Roughly $92,000 of movement across the seven months cannot be
+    attributed with confidence from bank descriptions alone. This matters directly: your taxable
+    income, your GST input credits, and the 85% gross margin above all move depending on the answers.</p>
+  </div>
+  <div class="qgrid">
+    <div class="q">
+      <div class="found"><span>Credit card payments to AMEX and Canadian Tire Bank</span><span class="amt">$35,996.88</span></div>
+      <div><dt>What I found</dt><dd>Sixteen payments across the period — AMEX $21,441.14 in eight payments, Canadian Tire Bank $14,555.74 in eight. The card statements were not provided, so what was bought is entirely unknown.</dd></div>
+      <div><dt>Why it matters</dt><dd>This is the largest single gap. If it is fuel, materials and equipment it is deductible and carries roughly $1,714 of recoverable GST. If any of it is personal, it is not deductible and your taxable income rises.</dd></div>
+      <div><dt>What to send</dt><dd>AMEX and Canadian Tire statements, February through August.</dd></div>
+    </div>
+    <div class="q">
+      <div class="found"><span>Transfers to and from “Canopyco” and “McCahill &amp; Co.”</span><span class="amt">$32,914.00</span></div>
+      <div><dt>What I found</dt><dd>$35,250 sent to Canopyco in seven transactions (two of $10,000 were reversed the same day), and $17,664 received from “McCahill &amp; Co.” on May 30 and 31. Net movement out is $15,250; net in is $17,664.</dd></div>
+      <div><dt>Why it matters</dt><dd>Your email is kyle@canopyco.ca, so this is probably an account of yours — which makes these inter-entity transfers, not income or expense. But if Canopyco is a third party, $15,250 is an unrecorded expense and the treatment changes completely.</dd></div>
+      <div><dt>What to send</dt><dd>What Canopyco is, and which account “McCahill &amp; Co.” paid from.</dd></div>
+    </div>
+    <div class="q">
+      <div class="found"><span>Payments to individuals who may be crew or subcontractors</span><span class="amt">$17,104.96</span></div>
+      <div><dt>What I found</dt><dd>Booker, Daniel $7,791.44 across thirteen payments; Michelle $5,175; Isayas $1,528.40; Kevin $1,250; Declan $533.33; Patrick Wong $312.37; Ryan $300; Liam Manchester $139.93; Graham $74.49. One payment to Booker — $204.05 on May 5 — exactly matches a K2 Stone ledgestone cost, suggesting some of these are material reimbursements rather than labour.</dd></div>
+      <div><dt>Why it matters</dt><dd>If they are employees, source deductions were owed on all of it and your payroll liability roughly doubles. If they are subcontractors, T5018 construction slips may be required. If they are reimbursements, they are materials.</dd></div>
+      <div><dt>What to send</dt><dd>For each name: employee, subcontractor, or reimbursement.</dd></div>
+    </div>
+    <div class="q">
+      <div class="found"><span>Transfers to “Ryan Roberts (Personal Ac…)”</span><span class="amt">$10,000.00</span></div>
+      <div><dt>What I found</dt><dd>$10,000 sent June 5, a second $10,000 sent June 7 and reversed the same day. Net $10,000 left the business to a named personal account.</dd></div>
+      <div><dt>Why it matters</dt><dd>A five-figure transfer to a personal account that is not yours needs a reason. It is a loan, a subcontractor payment, an equipment purchase, or a distribution — and each is taxed differently.</dd></div>
+      <div><dt>What to send</dt><dd>Who Ryan Roberts is and what the payment was for.</dd></div>
+    </div>
+    <div class="q">
+      <div class="found"><span>Two cheques that bounced twice each</span><span class="amt">$20,569.01</span></div>
+      <div><dt>What I found</dt><dd>A $10,569.01 cheque was deposited March 11 and 12 and returned both times. A $10,000 cheque was deposited May 7 and 8 and returned both times. Net effect on cash is zero — the money never arrived.</dd></div>
+      <div><dt>Why it matters</dt><dd>If those clients never paid by another route, this is $20,569 of revenue you earned and did not collect, on top of any other unpaid invoices.</dd></div>
+      <div><dt>What to send</dt><dd>Which clients these were, and whether they were ever settled.</dd></div>
+    </div>
+    <div class="q">
+      <div class="found"><span>An 85% gross margin that is almost certainly wrong</span><span class="amt">structural</span></div>
+      <div><dt>What I found</dt><dd>Direct supplier payments total only $29,498 against $237,314 of revenue collected. For landscape construction that ratio is implausible.</dd></div>
+      <div><dt>Why it matters</dt><dd>Real material costs are hiding inside the card payments, the unidentified individual payments, or purchases made from a personal account. Until they are located, the margin figure cannot be used for pricing decisions — though the cash total remains correct either way.</dd></div>
+      <div><dt>What to send</dt><dd>The card statements, plus any business purchases you paid for personally.</dd></div>
+    </div>
+    <div class="q">
+      <div class="found"><span>Personal balances given, but no transaction history</span><span class="amt">$35,751.00</span></div>
+      <div><dt>What I found</dt><dd>You reported $17,851 in TD chequing and $17,900 at Wealthsimple. No statements were provided, so the balances are taken on trust and the movement behind them is invisible — including where the $33,387 of business draws went.</dd></div>
+      <div><dt>Why it matters</dt><dd>Two things stay unresolved. Business costs you paid on a personal card are deductible and recoverable, but only if identified. And whether the Wealthsimple money is genuinely available depends on whether it is a TFSA, an RRSP, or non-registered — an RRSP withdrawal is taxable and withheld at source, so it is not a reserve you can lean on.</dd></div>
+      <div><dt>What to send</dt><dd>TD statements January through August, and whether the Wealthsimple account is registered.</dd></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><span class="n">06</span><span class="t"><h2>What you owe before you spend anything</h2></span>
+    <span class="note">estimates · verify before filing</span></div>
+  <div class="callout">
+    <h3>Source deductions and GST are trust funds, and you are personally liable</h3>
+    <p>You confirmed no GST and no payroll remittances have been made this year. Both are money
+    collected on someone else's behalf. Penalties on unremitted source deductions run at 10% for a
+    first failure and 20% for a repeat, plus interest. Directors are personally liable for both
+    — incorporating does not shield you from these two debts specifically. Ask your accountant about
+    the Voluntary Disclosures Program <em>before</em> filing; approaching CRA first generally produces
+    a materially better outcome than being found.</p>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Obligation</th><th class="txt">Basis</th><th>Estimate</th><th class="txt">Confidence</th></tr></thead>
+    <tbody>
+      <tr><td>GST collected on revenue</td><td class="txt">5/105 of $237,314 collected</td><td>11,300.66</td><td class="txt">High — revenue is verified</td></tr>
+      <tr><td>Less input tax credits on supplier costs</td><td class="txt">5/105 of $29,498</td><td class="pos">(1,404.66)</td><td class="txt">High</td></tr>
+      <tr><td>Less input tax credits on card spending</td><td class="txt">5/105 of $35,997, if all business</td><td class="pos">(1,714.14)</td><td class="txt">Low — depends on card statements</td></tr>
+      <tr class="sub"><td>Net GST owing</td><td class="txt"></td><td>8,181.86</td><td class="txt"></td></tr>
+      <tr class="rule"><td>CPP, employee and employer</td><td class="txt">$16,382 gross, less exemption, at 5.95% × 2</td><td>1,532.93</td><td class="txt">Medium — 2025 rates used</td></tr>
+      <tr><td>EI, employee and employer</td><td class="txt">1.64% × 2.4</td><td>644.78</td><td class="txt">Medium</td></tr>
+      <tr><td>Income tax that should have been withheld</td><td class="txt">12% assumed blended rate</td><td>1,965.81</td><td class="txt">Low — needs real calculation</td></tr>
+      <tr><td>Late remittance penalty</td><td class="txt">10%, first failure</td><td>414.35</td><td class="txt">Medium</td></tr>
+      <tr class="sub"><td>Payroll remittance exposure</td><td class="txt">Kierran only</td><td>4,557.87</td><td class="txt"></td></tr>
+      <tr class="rule"><td>Personal income tax on sole prop profit</td><td class="txt">$109,359 profit at 30% blended</td><td>32,807.84</td><td class="txt">Low — see caveat below</td></tr>
+      <tr class="total"><td>Total estimated CRA obligation</td><td class="txt"></td><td>45,548.00</td><td class="txt"></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="prose">
+    <p><span class="tag est">Estimate</span> The income tax line is the softest number here and the
+    largest. It rests on a $109,359 sole-proprietorship profit that assumes every card payment was a
+    deductible business cost and that the unidentified transfers were not expenses. Resolving section
+    05 could move it several thousand dollars in either direction. At 25% the reserve is $27,340; at
+    35% it is $38,276. Hold the higher figure until your return is prepared.</p>
+    <p>Two things are not in this table and should be. Your $4,000 monthly draw from the corporation
+    is currently a <strong>shareholder loan</strong> — no salary was run and no dividend declared.
+    Under section 15(2) it must be repaid within one year of your fiscal year end, so with a January 31,
+    2027 year end the deadline is January 31, 2028, or it is added to your personal income. And if the
+    $17,105 of payments to individuals turns out to be wages, the payroll line roughly triples.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><span class="n">07</span><span class="t"><h2>What you can actually deploy</h2></span>
+    <span class="note">and what it buys</span></div>
+  <div class="figures">
+    <div class="fig"><div class="l">Cash on hand</div><div class="v">$99,267</div><div class="d">Verified</div></div>
+    <div class="fig warn"><div class="l">Owed to CRA</div><div class="v">$45,548</div><div class="d">Estimated. Move it to a separate account this week.</div></div>
+    <div class="fig"><div class="l">Three-month reserve</div><div class="v">$42,661</div><div class="d">At $14,220 average monthly operating cost.</div></div>
+    <div class="fig hi"><div class="l">Deployable capital</div><div class="v">$11,058</div><div class="d">What is genuinely free to spend.</div></div>
+  </div>
+  <div class="prose">
+    <p>Your average monthly operating outflow across the seven months was $14,220. After the CRA
+    reserve, $53,720 remains — 3.8 months of operating cost. That is adequate but not comfortable
+    heading into a winter with almost no revenue, which on this year's pattern costs roughly
+    $42,700 to sit through.</p>
+    <p>The honest conclusion is that a vehicle purchase paid in cash is not affordable this year at
+    any of the prices you asked about.</p>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Vehicle scenario</th><th>$20,000</th><th>$30,000</th><th>$40,000</th><th>$50,000</th></tr></thead>
+    <tbody>
+      <tr><td>Price plus 5% GST</td><td>21,000</td><td>31,500</td><td>42,000</td><td>52,500</td></tr>
+      <tr class="head"><td colspan="5">Paid in cash</td></tr>
+      <tr><td>Deployable capital after purchase</td><td class="neg">(9,942)</td><td class="neg">(20,442)</td><td class="neg">(30,942)</td><td class="neg">(41,442)</td></tr>
+      <tr><td>Months of operating cost still covered</td><td>2.3</td><td>1.6</td><td>0.8</td><td>0.1</td></tr>
+      <tr class="total"><td>Verdict</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+      <tr class="head"><td colspan="5">Financed, 15% down, 60 months at 9%</td></tr>
+      <tr><td>Down payment</td><td>3,150</td><td>4,725</td><td>6,300</td><td>7,875</td></tr>
+      <tr><td>Monthly payment</td><td>371</td><td>556</td><td>741</td><td>926</td></tr>
+      <tr><td>Deployable capital after down payment</td><td>7,908</td><td>6,333</td><td>4,758</td><td>3,183</td></tr>
+      <tr><td>Payment as % of average monthly revenue</td><td>1.1%</td><td>1.6%</td><td>2.2%</td><td>2.7%</td></tr>
+      <tr class="total"><td>Verdict</td><td>Workable</td><td>Workable</td><td>Tight</td><td>Not advised</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="cap"><span class="tag est">Estimate</span> Financing terms are placeholders — get a real
+  quote. A fixed monthly payment does not care that it rained all November, which for a seasonal
+  business matters more than the interest rate. GST on a business vehicle is recoverable as an input
+  credit, but only once you are filing again.</p>
+  <div class="prose">
+    <h3>Equipment</h3>
+    <p>On this year's cash generation a defensible annual equipment budget is $5,000 to $8,000 —
+    roughly half of deployable capital, replenished each spring from the season's collections.
+    One concrete candidate: you paid $686 to rent a plate compactor for three days in March. A used
+    compactor costs about $2,000 and pays for itself in three rentals.</p>
+    <h3>Hiring</h3>
+    <p>Kierran cost $16,382 across seven months. At $27 an hour plus roughly 13% employer burden, one
+    additional crew member working 1,200 hours a season costs about $36,600. The business cannot fund
+    that from current deployable capital <em>and</em> a vehicle. It can fund one of them.</p>
+    <p>The stronger case is that your constraint may not be labour at all. July collected $4,250. A
+    second body does not fix an empty July — winter work does.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><span class="n">08</span><span class="t"><h2>Next season</h2></span>
+    <span class="note">three scenarios · Feb 2027 – Jan 2028</span></div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Line</th><th>Conservative</th><th>Base</th><th>Aggressive</th></tr></thead>
+    <tbody>
+      <tr><td>Revenue excluding GST</td><td>230,000</td><td>290,000</td><td>390,000</td></tr>
+      <tr><td>Operating costs at 44% of revenue</td><td class="neg">(101,200)</td><td class="neg">(127,600)</td><td class="neg">(171,600)</td></tr>
+      <tr><td>Additional crew member</td><td>—</td><td>—</td><td class="neg">(36,600)</td></tr>
+      <tr class="sub"><td>Operating profit before your pay</td><td>128,800</td><td>162,400</td><td>181,800</td></tr>
+      <tr><td>Your compensation at $4,000/month</td><td class="neg">(48,000)</td><td class="neg">(48,000)</td><td class="neg">(48,000)</td></tr>
+      <tr><td>Estimated corporate tax at 11%</td><td class="neg">(8,888)</td><td class="neg">(12,584)</td><td class="neg">(14,718)</td></tr>
+      <tr class="total"><td>Free cash generated</td><td>71,912</td><td>101,816</td><td>119,082</td></tr>
+      <tr class="rule"><td>Less operating reserve to hold</td><td class="neg">(42,661)</td><td class="neg">(42,661)</td><td class="neg">(52,000)</td></tr>
+      <tr class="total"><td>Available to reinvest</td><td>29,251</td><td>59,155</td><td>67,082</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="cap"><span class="tag est">Estimate</span> The 44% operating cost ratio is derived from
+  your actual February–August outflows against revenue collected. It is the most reliable ratio in
+  this report because it uses totals rather than the uncertain split between categories. Base case
+  assumes a nine-month revenue year at roughly this season's monthly pace; aggressive assumes a second
+  crew member who is fully utilised, which is the assumption most likely to fail.</p>
+  <div class="prose">
+    <h3>Goals worth measuring</h3>
+    <p>Set these against what actually happened this year, not against industry averages:</p>
+    <ul>
+      <li><strong>Revenue per crew hour.</strong> You billed labour at $50 and pay $27. Track the
+      spread by job; the split-rail fence job showed fixed-price work carrying materially better
+      margin than hourly.</li>
+      <li><strong>Collection within 30 days.</strong> Two cheques totalling $20,569 bounced twice
+      each this year. A deposit policy and e-transfer over cheques would have prevented both.</li>
+      <li><strong>Off-season revenue.</strong> July collected $4,250 against roughly $7,300 of
+      monthly fixed cost. Any recurring maintenance revenue that covers November through February
+      is worth more per dollar than a summer install.</li>
+      <li><strong>Materials margin recovery.</strong> Once the card statements are categorised you
+      will have a real gross margin. Target it deliberately rather than discovering it in April.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><span class="n">09</span><span class="t"><h2>Where this leaves you</h2></span>
+    <span class="note">the short version</span></div>
+  <div class="prose">
+    <p><strong>Your total liquid position is $135,018.</strong> $67,159 in the sole proprietor's EQ
+    account, $32,108 in the corporation's, $17,851 in TD chequing and $17,900 at Wealthsimple. Strip
+    out the investments, whose accessibility depends on how the account is registered, and you have
+    $117,118 in true cash.</p>
+    <p><strong>The business generated $99,267 of net cash from a zero start</strong>, after paying you
+    $33,387. In cash terms the first season was a success.</p>
+    <p><strong>Roughly $45,548 of that is not yours.</strong> Unremitted GST, unremitted payroll
+    deductions with penalty, and the personal tax on sole-proprietorship profit. Open a separate
+    savings account and move it out of the operating account this week — money that sits in a
+    chequing account gets spent.</p>
+    <p><strong>Deployable business capital is about $11,058.</strong> That funds an equipment budget
+    or a financed vehicle down payment. It does not fund a cash vehicle purchase, and it does not fund
+    a second hire in the same year as a vehicle. Your personal $17,851 is not a second source of
+    capital here — a large share of it is spoken for by the same personal tax bill.</p>
+    <p><strong>The biggest uses of cash were you and your credit cards.</strong> $33,387 in owner
+    draws and $35,997 in card payments together account for $69,384 — more than double what went to
+    suppliers. The card spending is the single largest thing in this report that nobody can currently
+    explain.</p>
+    <p><strong>Two structural problems need your accountant before January 31.</strong> The corporation
+    traded for two months out of the sole proprietor's bank account, and your $4,000 monthly draw is an
+    undeclared shareholder loan. Both are fixable now and expensive later.</p>
+  </div>
+  <div class="callout caution">
+    <h3>Send these four things and this becomes a complete picture</h3>
+    <p>AMEX and Canadian Tire statements February–August · TD and Wealthsimple statements January–August ·
+    what Canopyco is and who Ryan Roberts is · whether each individual you paid was an employee, a
+    subcontractor, or being reimbursed. Those four answers resolve about $92,000 of unexplained movement
+    and firm up the tax reserve, which is currently the least reliable number here.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Prepared September 4, 2026 from EQ Bank statements for accounts 400101914 (February 9 – August 31,
+  2026) and 400190507 (August 28 – 31, 2026), comprising 200 transactions. Cash figures reconcile to
+  statement balances with zero difference and are stated as fact. Tax, penalty and scenario figures are
+  estimates built on 2025 CRA rates and stated assumptions; they are sized to guide decisions and are
+  not a filing. Personal balances of $17,851 and $17,900 were reported by the owner and are not
+  supported by statements. September 2026 through January 2027 has not yet occurred, so no full-year corporate
+  result can be stated. This is not a substitute for advice from a CPA, which the shareholder-loan and
+  entity issues in section 04 and 06 specifically require.</p>
+</footer>
+</div>
