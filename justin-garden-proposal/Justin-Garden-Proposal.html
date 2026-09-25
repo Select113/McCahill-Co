@@ -16,39 +16,22 @@
     --brass: #b98a4b;
     --brass-soft: #d9b98a;
   }
-  @page { size: 17in 11in; margin: 0; }
+  @page { size: 17in 9.5625in; margin: 0; }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #d9d4ca; }
   body { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .page { width: 17in; height: 11in; margin: 0 auto 0.4in; position: relative; overflow: hidden; background: var(--stone); page-break-after: always; break-after: page; }
+  .page { width: 17in; height: 9.5625in; margin: 0 auto 0.4in; position: relative; overflow: hidden; background: var(--stone); page-break-after: always; break-after: page; }
   .page:last-child { page-break-after: auto; break-after: auto; margin-bottom: 0; }
   @media print { html, body { background: none; } .page { margin: 0; } }
   .serif { font-family: "Cormorant Garamond", Georgia, serif; }
   .eyebrow { font-size: 9.5pt; letter-spacing: .28em; text-transform: uppercase; font-weight: 500; }
 
   /* ---------- Cover ---------- */
-  .cover { display: grid; grid-template-columns: 9.4in 1fr; background: var(--forest); color: var(--stone); }
-  .cover .hero { position: relative; height: 11in; }
-  .cover .hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .cover .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(30,42,35,0) 70%, rgba(30,42,35,1) 100%); }
-  .cover .text { padding: 0.9in 0.85in 0.75in 0.5in; display: flex; flex-direction: column; }
-  .brand { display: flex; align-items: center; gap: 14px; }
-  .brand .mark { width: 42px; height: 42px; border: 1.5px solid var(--brass-soft); border-radius: 50%; display: grid; place-items: center; font-family: "Cormorant Garamond", serif; font-size: 17pt; color: var(--brass-soft); }
-  .brand .name { font-family: "Cormorant Garamond", serif; font-size: 17pt; letter-spacing: .06em; }
-  .cover .eyebrow { color: var(--brass-soft); margin-top: 1.5in; }
-  .cover h1 { font-family: "Cormorant Garamond", serif; font-weight: 400; font-size: 76pt; line-height: .95; margin: 18px 0 0; }
-  .cover h1 em { color: var(--brass-soft); }
-  .cover .for { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 22pt; margin-top: 22px; color: #d8d3c8; }
-  .cover .intro { font-size: 11pt; line-height: 1.7; color: #c9c6bc; margin-top: 30px; max-width: 5.6in; font-weight: 300; }
-  .cover .contents { margin-top: auto; border-top: 1px solid rgba(217,185,138,.35); padding-top: 22px; }
-  .cover .contents ol { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 30px; }
-  .cover .contents li { font-size: 10.5pt; color: #d8d3c8; display: flex; gap: 12px; }
-  .cover .contents li span { color: var(--brass-soft); font-family: "Cormorant Garamond", serif; font-size: 13pt; line-height: 1; }
-  .cover .contents li.pending { color: #7f8a80; }
-  .cover .date { font-size: 9pt; letter-spacing: .2em; text-transform: uppercase; color: #8f978e; margin-top: 26px; }
+  .cover { background: #0b3a5c; }
+  .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* ---------- Area poster ---------- */
-  .area { padding: 0.55in 0.6in 0.5in; display: flex; flex-direction: column; }
+  .area { padding: 0.45in 0.6in 0.42in; display: flex; flex-direction: column; }
   .area header { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid #cfc7b8; }
   .area header .num { font-family: "Cormorant Garamond", serif; font-size: 64pt; line-height: .8; color: var(--brass); margin-right: 22px; }
   .area header .titles { display: flex; align-items: flex-end; }
@@ -57,9 +40,9 @@
   .area header .brandline { text-align: right; font-size: 9pt; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
   .area header .brandline b { display: block; font-family: "Cormorant Garamond", serif; font-size: 15pt; letter-spacing: .05em; text-transform: none; color: var(--forest); font-weight: 500; margin-bottom: 2px; }
 
-  .triptych { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.22in; margin-top: 0.28in; }
+  .triptych { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.22in; margin-top: 0.22in; }
   .shot { position: relative; }
-  .shot .frame { height: 6.3in; overflow: hidden; border-radius: 3px; position: relative; }
+  .shot .frame { height: 4.95in; overflow: hidden; border-radius: 3px; position: relative; }
   .shot .frame { background: var(--stone-2); }
   .shot .frame::before { content: "Photo pending"; position: absolute; inset: 0; display: grid; place-items: center; color: #9b9385; font-size: 10pt; letter-spacing: .2em; text-transform: uppercase; }
   .shot img { position: relative; width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -115,26 +98,7 @@
 
 <!-- ============ COVER ============ -->
 <section class="page cover">
-  <div class="hero"><img src="images/area1-after-night.webp" alt="Proposed garden at dusk with landscape lighting"></div>
-  <div class="text">
-    <div class="brand"><div class="mark">M</div><div class="name">McCahill &amp; Co.</div></div>
-    <div class="eyebrow">Landscape Design Proposal</div>
-    <h1>A Garden<br><em>Vision</em></h1>
-    <div class="for">Prepared for Justin</div>
-    <p class="intro">Your property already has great bones: mature trees, dramatic natural rock and a striking modern home. This proposal shows how we'd bring it together into a calm, low-maintenance landscape that looks just as good at night as it does by day.</p>
-    <div class="contents">
-      <div class="eyebrow" style="margin:0;color:#8f978e">Inside</div>
-      <ol>
-        <li><span>01</span>The Rock Garden Slope</li>
-        <li><span>02</span>The Side Walkway</li>
-        <li><span>03</span>The Garden Walk</li>
-        <li class="pending"><span>04</span>Area four</li>
-        <li class="pending"><span>05</span>Area five</li>
-        <li><span>—</span>Investment &amp; next steps</li>
-      </ol>
-    </div>
-    <div class="date">September 2026</div>
-  </div>
+  <img src="images/cover.webp" alt="Garden Design Proposal: 285 King George Terrace, prepared for Justin Tse">
 </section>
 
 <!-- ============ AREA 01 ============ -->
@@ -147,7 +111,7 @@
         <div class="tag">From overgrown hillside to a walkable, meadow-style garden</div>
       </div>
     </div>
-    <div class="brandline"><b>McCahill &amp; Co.</b>Prepared for Justin</div>
+    <div class="brandline"><b>McCahill &amp; Co.</b>Prepared for Justin Tse</div>
   </header>
 
   <div class="triptych">
@@ -202,7 +166,7 @@
         <div class="tag">From a forgotten storage strip to a clean, modern entry path</div>
       </div>
     </div>
-    <div class="brandline"><b>McCahill &amp; Co.</b>Prepared for Justin</div>
+    <div class="brandline"><b>McCahill &amp; Co.</b>Prepared for Justin Tse</div>
   </header>
 
   <div class="triptych">
@@ -257,7 +221,7 @@
         <div class="tag">A worn dirt track becomes a planted, lantern-lit path</div>
       </div>
     </div>
-    <div class="brandline"><b>McCahill &amp; Co.</b>Prepared for Justin</div>
+    <div class="brandline"><b>McCahill &amp; Co.</b>Prepared for Justin Tse</div>
   </header>
 
   <div class="triptych">
