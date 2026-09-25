@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Justin Garden Vision</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  :root {
+    --forest: #1e2a23;
+    --forest-2: #2c3b31;
+    --moss: #6d7f5e;
+    --stone: #f1ede5;
+    --stone-2: #e6dfd2;
+    --ink: #1c211d;
+    --muted: #6b6a62;
+    --brass: #b98a4b;
+    --brass-soft: #d9b98a;
+  }
+  @page { size: 17in 11in; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #d9d4ca; }
+  body { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 17in; height: 11in; margin: 0 auto 0.4in; position: relative; overflow: hidden; background: var(--stone); page-break-after: always; break-after: page; }
+  .page:last-child { page-break-after: auto; break-after: auto; margin-bottom: 0; }
+  @media print { html, body { background: none; } .page { margin: 0; } }
+  .serif { font-family: "Cormorant Garamond", Georgia, serif; }
+  .eyebrow { font-size: 9.5pt; letter-spacing: .28em; text-transform: uppercase; font-weight: 500; }
+
+  /* ---------- Cover ---------- */
+  .cover { display: grid; grid-template-columns: 9.4in 1fr; background: var(--forest); color: var(--stone); }
+  .cover .hero { position: relative; height: 11in; }
+  .cover .hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cover .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(30,42,35,0) 70%, rgba(30,42,35,1) 100%); }
+  .cover .text { padding: 0.9in 0.85in 0.75in 0.5in; display: flex; flex-direction: column; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand .mark { width: 42px; height: 42px; border: 1.5px solid var(--brass-soft); border-radius: 50%; display: grid; place-items: center; font-family: "Cormorant Garamond", serif; font-size: 17pt; color: var(--brass-soft); }
+  .brand .name { font-family: "Cormorant Garamond", serif; font-size: 17pt; letter-spacing: .06em; }
+  .cover .eyebrow { color: var(--brass-soft); margin-top: 1.5in; }
+  .cover h1 { font-family: "Cormorant Garamond", serif; font-weight: 400; font-size: 76pt; line-height: .95; margin: 18px 0 0; }
+  .cover h1 em { color: var(--brass-soft); }
+  .cover .for { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 22pt; margin-top: 22px; color: #d8d3c8; }
+  .cover .intro { font-size: 11pt; line-height: 1.7; color: #c9c6bc; margin-top: 30px; max-width: 5.6in; font-weight: 300; }
+  .cover .contents { margin-top: auto; border-top: 1px solid rgba(217,185,138,.35); padding-top: 22px; }
+  .cover .contents ol { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 30px; }
+  .cover .contents li { font-size: 10.5pt; color: #d8d3c8; display: flex; gap: 12px; }
+  .cover .contents li span { color: var(--brass-soft); font-family: "Cormorant Garamond", serif; font-size: 13pt; line-height: 1; }
+  .cover .contents li.pending { color: #7f8a80; }
+  .cover .date { font-size: 9pt; letter-spacing: .2em; text-transform: uppercase; color: #8f978e; margin-top: 26px; }
+
+  /* ---------- Area poster ---------- */
+  .area { padding: 0.55in 0.6in 0.5in; display: flex; flex-direction: column; }
+  .area header { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid #cfc7b8; }
+  .area header .num { font-family: "Cormorant Garamond", serif; font-size: 64pt; line-height: .8; color: var(--brass); margin-right: 22px; }
+  .area header .titles { display: flex; align-items: flex-end; }
+  .area header h2 { font-family: "Cormorant Garamond", serif; font-weight: 500; font-size: 38pt; line-height: 1; margin: 0; }
+  .area header .tag { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 16pt; color: var(--muted); margin-top: 6px; }
+  .area header .brandline { text-align: right; font-size: 9pt; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  .area header .brandline b { display: block; font-family: "Cormorant Garamond", serif; font-size: 15pt; letter-spacing: .05em; text-transform: none; color: var(--forest); font-weight: 500; margin-bottom: 2px; }
+
+  .triptych { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.22in; margin-top: 0.28in; }
+  .shot { position: relative; }
+  .shot .frame { height: 5.55in; overflow: hidden; border-radius: 3px; position: relative; }
+  .shot .frame { background: var(--stone-2); }
+  .shot .frame::before { content: "Photo pending"; position: absolute; inset: 0; display: grid; place-items: center; color: #9b9385; font-size: 10pt; letter-spacing: .2em; text-transform: uppercase; }
+  .shot img { position: relative; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .shot .label { position: absolute; top: 14px; left: 14px; background: rgba(241,237,229,.94); color: var(--forest); padding: 7px 13px 6px; border-radius: 2px; font-size: 8.5pt; letter-spacing: .24em; text-transform: uppercase; font-weight: 600; }
+  .shot.night .label { background: rgba(30,42,35,.9); color: var(--brass-soft); }
+  .shot.vision .label { background: var(--forest); color: var(--stone); }
+  .shot .arrow { position: absolute; top: 50%; left: -0.22in; width: 0.22in; display: grid; place-items: center; transform: translateY(-50%); color: var(--brass); font-size: 14pt; }
+  .shot p { font-size: 9.8pt; line-height: 1.55; color: #45473f; margin: 12px 2px 0; }
+  .shot p b { color: var(--ink); font-weight: 600; }
+
+  .details { display: grid; grid-template-columns: 1fr 1fr 3.9in; gap: 0.35in; margin-top: auto; padding-top: 0.22in; border-top: 1px solid #cfc7b8; }
+  .details h3 { font-size: 8.5pt; letter-spacing: .26em; text-transform: uppercase; font-weight: 600; color: var(--moss); margin: 0 0 9px; }
+  .details ul { margin: 0; padding: 0; list-style: none; }
+  .details li { font-size: 9.6pt; line-height: 1.45; padding-left: 16px; position: relative; margin-bottom: 4px; color: #383a34; }
+  .details li::before { content: ""; position: absolute; left: 0; top: .58em; width: 7px; height: 1px; background: var(--brass); }
+  .invest { background: var(--forest); color: var(--stone); border-radius: 3px; padding: 18px 22px; display: flex; flex-direction: column; justify-content: center; }
+  .invest h3 { color: var(--brass-soft); }
+  .invest .row { display: flex; justify-content: space-between; align-items: baseline; font-size: 10.5pt; padding: 5px 0; border-bottom: 1px solid rgba(241,237,229,.14); color: #d8d3c8; }
+  .invest .row b { font-family: "Cormorant Garamond", serif; font-size: 17pt; font-weight: 500; color: var(--stone); }
+  .invest .row.total { border-bottom: 0; padding-top: 8px; color: var(--stone); font-weight: 500; }
+  .invest .row.total b { font-size: 26pt; color: var(--brass-soft); }
+  .tbc { color: #e8a87c !important; font-style: italic; }
+
+  /* ---------- Summary ---------- */
+  .summary { display: grid; grid-template-columns: 1fr 6.6in; }
+  .summary .left { padding: 0.75in 0.7in 0.6in 0.8in; display: flex; flex-direction: column; }
+  .summary .eyebrow { color: var(--moss); }
+  .summary h2 { font-family: "Cormorant Garamond", serif; font-weight: 400; font-size: 52pt; line-height: 1; margin: 12px 0 30px; }
+  .summary h2 em { color: var(--brass); }
+  table.costs { width: 100%; border-collapse: collapse; font-size: 11pt; }
+  table.costs th { text-align: left; font-size: 8.5pt; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 0 0 10px; border-bottom: 1.5px solid var(--forest); }
+  table.costs th.n, table.costs td.n { text-align: right; }
+  table.costs td { padding: 13px 0; border-bottom: 1px solid #d6cfc1; }
+  table.costs td .area-num { font-family: "Cormorant Garamond", serif; color: var(--brass); font-size: 16pt; margin-right: 12px; }
+  table.costs td.n { font-variant-numeric: tabular-nums; }
+  table.costs tr.pending td { color: #a39d91; }
+  table.costs tr.total td { border-bottom: 0; border-top: 1.5px solid var(--forest); font-weight: 600; padding-top: 16px; }
+  table.costs tr.total td.n { font-family: "Cormorant Garamond", serif; font-size: 28pt; color: var(--forest); font-weight: 500; }
+  .fine { font-size: 8.8pt; color: var(--muted); line-height: 1.55; margin-top: auto; }
+  .summary .right { background: var(--forest); color: var(--stone); padding: 0.75in 0.7in 0.6in; display: flex; flex-direction: column; }
+  .summary .right .eyebrow { color: var(--brass-soft); }
+  .steps { list-style: none; padding: 0; margin: 22px 0 0; counter-reset: s; }
+  .steps li { counter-increment: s; display: grid; grid-template-columns: 44px 1fr; gap: 8px; margin-bottom: 22px; }
+  .steps li::before { content: counter(s, decimal-leading-zero); font-family: "Cormorant Garamond", serif; font-size: 22pt; color: var(--brass-soft); line-height: 1; }
+  .steps b { display: block; font-weight: 500; font-size: 11.5pt; margin-bottom: 3px; }
+  .steps span { font-size: 9.8pt; color: #bfc0b6; line-height: 1.55; font-weight: 300; }
+  .contact { margin-top: auto; border-top: 1px solid rgba(217,185,138,.35); padding-top: 22px; }
+  .contact .name { font-family: "Cormorant Garamond", serif; font-size: 24pt; }
+  .contact .line { font-size: 10.5pt; color: #d8d3c8; margin-top: 6px; letter-spacing: .04em; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="page cover">
+  <div class="hero"><img src="images/area1-after-night.webp" alt="Proposed garden at dusk with landscape lighting"></div>
+  <div class="text">
+    <div class="brand"><div class="mark">M</div><div class="name">McCahill &amp; Co.</div></div>
+    <div class="eyebrow">Landscape Design Proposal</div>
+    <h1>A Garden<br><em>Vision</em></h1>
+    <div class="for">Prepared for Justin</div>
+    <p class="intro">Your property already has great bones: mature trees, dramatic natural rock and a striking modern home. This proposal shows how we'd bring it together into a calm, low-maintenance landscape that looks just as good at night as it does by day.</p>
+    <div class="contents">
+      <div class="eyebrow" style="margin:0;color:#8f978e">Inside</div>
+      <ol>
+        <li><span>01</span>The Rock Garden Slope</li>
+        <li><span>02</span>The Side Walkway</li>
+        <li><span>03</span>The Garden Walk</li>
+        <li class="pending"><span>04</span>Area four</li>
+        <li class="pending"><span>05</span>Area five</li>
+        <li><span>—</span>Investment &amp; next steps</li>
+      </ol>
+    </div>
+    <div class="date">September 2026</div>
+  </div>
+</section>
+
+<!-- ============ AREA 01 ============ -->
+<section class="page area">
+  <header>
+    <div class="titles">
+      <div class="num">01</div>
+      <div>
+        <h2>The Rock Garden Slope</h2>
+        <div class="tag">From overgrown hillside to a walkable, meadow-style garden</div>
+      </div>
+    </div>
+    <div class="brandline"><b>McCahill &amp; Co.</b>Prepared for Justin</div>
+  </header>
+
+  <div class="triptych">
+    <div class="shot">
+      <div class="frame"><img src="images/area1-before.jpg" alt="Current rock garden slope"><div class="label">Today</div></div>
+      <p><b>What's there now.</b> Beautiful natural rock and mature trees, but the slope has turned into patchy grass and weeds. There's no easy way to walk through it, and the plants are scattered rather than working together.</p>
+    </div>
+    <div class="shot vision">
+      <div class="arrow">→</div>
+      <div class="frame"><img src="images/area1-after-day.webp" alt="Proposed design in daylight"><div class="label">The Vision</div></div>
+      <p><b>The design.</b> Gently winding gravel paths let you walk the whole slope. Between them, drifts of soft ornamental grasses and silver-leaved perennials move in the breeze. The existing trees and stone are kept and shown off as features.</p>
+    </div>
+    <div class="shot night">
+      <div class="arrow">→</div>
+      <div class="frame"><img src="images/area1-after-night.webp" alt="Proposed design at night with lighting"><div class="label">After Dark</div></div>
+      <p><b>Landscape lighting.</b> Warm, low-glare path lights guide the way, and uplights make the trees glow. The result is safe to walk at night and turns the garden into a view from inside the house.</p>
+    </div>
+  </div>
+
+  <div class="details">
+    <div>
+      <h3>Landscape works</h3>
+      <ul>
+        <li>Clear weeds and tired turf; regrade and prepare the slope</li>
+        <li>Build meandering gravel paths on a compacted base with clean edges</li>
+        <li>Plant drought-tolerant grasses and silver perennials in natural drifts</li>
+        <li>Retain and feature existing trees and natural stone</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Lighting</h3>
+      <ul>
+        <li>Low-voltage warm-white LED system</li>
+        <li>Path lights along the gravel walks</li>
+        <li>Uplights on the feature trees</li>
+        <li>Automatic dusk-to-dawn timer control</li>
+      </ul>
+    </div>
+    <div class="invest">
+      <h3>Estimated investment</h3>
+      <div class="row">Landscape installation <b class="tbc">$ TBC</b></div>
+      <div class="row">Landscape lighting <b class="tbc">$ TBC</b></div>
+      <div class="row total">Area 01 total <b class="tbc">$ TBC</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AREA 02 ============ -->
+<section class="page area">
+  <header>
+    <div class="titles">
+      <div class="num">02</div>
+      <div>
+        <h2>The Side Walkway</h2>
+        <div class="tag">From a forgotten storage strip to a clean, modern entry path</div>
+      </div>
+    </div>
+    <div class="brandline"><b>McCahill &amp; Co.</b>Prepared for Justin</div>
+  </header>
+
+  <div class="triptych">
+    <div class="shot">
+      <div class="frame"><img src="images/area2-before.jpg" alt="Current side yard" onerror="this.remove()"><div class="label">Today</div></div>
+      <p><b>What's there now.</b> A narrow strip of bare, compacted soil along the house. It has become a catch-all for bins, ladders and leftover materials, and it doesn't match the quality of the home.</p>
+    </div>
+    <div class="shot vision">
+      <div class="arrow">→</div>
+      <div class="frame"><img src="images/area2-after-day.jpg" alt="Proposed walkway in daylight" onerror="this.remove()"><div class="label">The Vision</div></div>
+      <p><b>The design.</b> Large-format concrete stepping pavers run the length of the side yard, set in a bed of smooth river rock. Weathered steel planters with soft ornamental grasses surround the existing trees. The look is crisp, modern and suits the architecture.</p>
+    </div>
+    <div class="shot night">
+      <div class="arrow">→</div>
+      <div class="frame"><img src="images/area2-after-night.jpg" alt="Proposed walkway at night" onerror="this.remove()"><div class="label">After Dark</div></div>
+      <p><b>Landscape lighting.</b> Low fixtures along the foundation wash soft light up the siding and across the path. Uplights in the planters make the trees and grasses glow, so the side of the house is safe and welcoming after dark.</p>
+    </div>
+  </div>
+
+  <div class="details">
+    <div>
+      <h3>Landscape works</h3>
+      <ul>
+        <li>Clear and level the side yard; compacted base with weed barrier</li>
+        <li>Large-format concrete stepping pavers set in river rock</li>
+        <li>Two weathered-steel (Corten) planters around the existing trees</li>
+        <li>Ornamental grass planting; clean edge along the foundation</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Lighting</h3>
+      <ul>
+        <li>Low-voltage warm-white LED, tied into the main system</li>
+        <li>Wall-wash lights along the foundation</li>
+        <li>Planter uplights on the trees and grasses</li>
+        <li>Automatic dusk-to-dawn timer control</li>
+      </ul>
+    </div>
+    <div class="invest">
+      <h3>Estimated investment</h3>
+      <div class="row">Landscape installation <b class="tbc">$ TBC</b></div>
+      <div class="row">Landscape lighting <b class="tbc">$ TBC</b></div>
+      <div class="row total">Area 02 total <b class="tbc">$ TBC</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AREA 03 ============ -->
+<section class="page area">
+  <header>
+    <div class="titles">
+      <div class="num">03</div>
+      <div>
+        <h2>The Garden Walk</h2>
+        <div class="tag">A worn dirt track becomes a planted, lantern-lit path</div>
+      </div>
+    </div>
+    <div class="brandline"><b>McCahill &amp; Co.</b>Prepared for Justin</div>
+  </header>
+
+  <div class="triptych">
+    <div class="shot">
+      <div class="frame"><img src="images/area3-before.jpg" alt="Current garden walk" onerror="this.remove()"><div class="label">Today</div></div>
+      <p><b>What's there now.</b> A strong setting: a raised concrete planter along the brick wall, a lovely specimen tree and big natural boulders. But the path is worn to dirt and dead grass, and the planter is bare after the old climbers were cut back.</p>
+    </div>
+    <div class="shot vision">
+      <div class="arrow">→</div>
+      <div class="frame"><img src="images/area3-after-day.jpg" alt="Proposed garden walk in daylight" onerror="this.remove()"><div class="label">The Vision</div></div>
+      <p><b>The design.</b> The same concrete stepping pavers and river rock as the side walkway carry around the house, so the whole property feels connected. Soft ornamental grasses fill the raised planter and drift between the boulders. The specimen tree stays as the focal point.</p>
+    </div>
+    <div class="shot night">
+      <div class="arrow">→</div>
+      <div class="frame"><img src="images/area3-after-night.jpg" alt="Proposed garden walk at night" onerror="this.remove()"><div class="label">After Dark</div></div>
+      <p><b>Landscape lighting.</b> Slim path lights line the walk, small lights in the planter wall graze the concrete, and the grasses and specimen tree are softly uplit. Together with the existing soffit lights, the path glows warm and inviting.</p>
+    </div>
+  </div>
+
+  <div class="details">
+    <div>
+      <h3>Landscape works</h3>
+      <ul>
+        <li>Remove dead turf; level and prepare a compacted base with weed barrier</li>
+        <li>Large-format concrete stepping pavers in river rock, matching Area 02</li>
+        <li>Replant the raised planter with ornamental grasses and river-rock mulch</li>
+        <li>Grass drifts around the existing boulders; specimen tree retained</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Lighting</h3>
+      <ul>
+        <li>Low-voltage warm-white LED, tied into the main system</li>
+        <li>Path lights along the walk</li>
+        <li>Planter-wall accent lights and grass uplights</li>
+        <li>Uplight on the specimen tree</li>
+      </ul>
+    </div>
+    <div class="invest">
+      <h3>Estimated investment</h3>
+      <div class="row">Landscape installation <b class="tbc">$ TBC</b></div>
+      <div class="row">Landscape lighting <b class="tbc">$ TBC</b></div>
+      <div class="row total">Area 03 total <b class="tbc">$ TBC</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SUMMARY ============ -->
+<section class="page summary">
+  <div class="left">
+    <div class="eyebrow">Investment summary</div>
+    <h2>Bringing the <em>vision</em> to life</h2>
+    <table class="costs">
+      <thead><tr><th>Area</th><th class="n">Landscape</th><th class="n">Lighting</th><th class="n">Total</th></tr></thead>
+      <tbody>
+        <tr><td><span class="area-num">01</span>The Rock Garden Slope</td><td class="n tbc">TBC</td><td class="n tbc">TBC</td><td class="n tbc">TBC</td></tr>
+        <tr><td><span class="area-num">02</span>The Side Walkway</td><td class="n tbc">TBC</td><td class="n tbc">TBC</td><td class="n tbc">TBC</td></tr>
+        <tr><td><span class="area-num">03</span>The Garden Walk</td><td class="n tbc">TBC</td><td class="n tbc">TBC</td><td class="n tbc">TBC</td></tr>
+        <tr class="pending"><td><span class="area-num">04</span>Area four</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr class="pending"><td><span class="area-num">05</span>Area five</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr class="total"><td>Complete project</td><td></td><td></td><td class="n tbc">TBC</td></tr>
+      </tbody>
+    </table>
+    <p class="fine">Prices are estimates based on the concept designs shown and may be refined after a final site measure. Areas can be done together or in phases. Design images are artist's impressions: final plant sizes, placement and light effects will vary, and new plantings take a season or two to fill in.</p>
+  </div>
+  <div class="right">
+    <div class="eyebrow">Next steps</div>
+    <ol class="steps">
+      <li><div><b>Review the vision</b><span>Take your time with the designs and let us know what you love and what you'd change.</span></div></li>
+      <li><div><b>Walk the site together</b><span>We'll confirm measurements, plant choices and light placement with you on site.</span></div></li>
+      <li><div><b>Final quote &amp; schedule</b><span>You'll get a fixed quote and a start date. Phasing the work is always an option.</span></div></li>
+      <li><div><b>Build &amp; switch on</b><span>We install the garden and lighting, then walk you through care and controls.</span></div></li>
+    </ol>
+    <div class="contact">
+      <div class="name">McCahill &amp; Co.</div>
+      <div class="line">647-540-3607 &nbsp;·&nbsp; kyle@canopyco.ca</div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
