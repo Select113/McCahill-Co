@@ -9,10 +9,15 @@ reports to Ryan and pays Canopyco its profit share.
 - **Materials** (mulch, debris, plants, etc.): profit (billed − cost) is split **50/50**.
 - **Labour**: labour revenue less employee payroll for that period. Ryan gets **28%** of the result.
   - Kyle's own hours are never deducted.
-  - Employee hours worked **with Kyle on site** are deducted, even with several employees on site.
-  - **Replacement hours** are hours an employee works at a site without Kyle, or stays on after Kyle
-    has left. They **cannot** be deducted. List and tally them separately, then subtract them from
-    the total payroll cost.
+  - Employee hours worked **while Kyle is working** are deducted, whether he's on the same site or a
+    different one, and however many employees are out.
+  - **Replacement hours** are employee hours worked **while Kyle is not working** at all. They
+    **cannot** be deducted. Compare clock times against Kyle's working hours each day, list and tally
+    the replacement hours separately, then subtract them from the total payroll cost.
+    Example: Kyle works 4 h with Kierran while Booker works 6 h elsewhere, so 2 of Booker's hours are
+    replacement hours.
+  - **Total payroll cost** = wages (hours × rate) + employer CPP + employer EI. Replacement cost is
+    loaded the same way.
 - All figures are pre-GST.
 
 ## Wage rates
@@ -21,6 +26,8 @@ reports to Ryan and pays Canopyco its profit share.
 |---|---|
 | Kierran | $27/hr |
 | Booker | $30/hr |
+
+Employer contributions, 2026: CPP 5.95%, EI 2.282% (1.4 × the 1.63% employee rate).
 
 ## Folders
 
